@@ -9,6 +9,7 @@ import Movies from "./pages/Movies";
 import SeatLayout from "./pages/SeatLayout";
 import Favorite from "./pages/Favorite";
 import { Toaster } from "react-hot-toast";
+import HeroSection from "./components/HeroSection";
 
 const App = () => {
   const isAdmin = useLocation().pathname.startsWith("/admin");
@@ -17,6 +18,7 @@ const App = () => {
     <>
       <Toaster />
       {!isAdmin && <Navbar />}
+      <HeroSection />
       <Routes>
         <Route path='/' element={Home} />
         <Route path='/movies' element={Movies} />
