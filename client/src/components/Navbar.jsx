@@ -29,35 +29,40 @@ const Navbar = () => {
 
         <Link
           onClick={() => {
-            scrollTo(0, 0), setIsOpen(false);
+            scrollTo(0, 0);
+            setIsOpen(false);
           }}
           to={"/"}>
           Home
         </Link>
         <Link
           onClick={() => {
-            scrollTo(0, 0), setIsOpen(false);
+            scrollTo(0, 0);
+            setIsOpen(false);
           }}
           to={"/movies"}>
           Movies
         </Link>
         <Link
           onClick={() => {
-            scrollTo(0, 0), setIsOpen(false);
+            scrollTo(0, 0);
+            setIsOpen(false);
           }}
           to={"/"}>
           Theatres
         </Link>
         <Link
           onClick={() => {
-            scrollTo(0, 0), setIsOpen(false);
+            scrollTo(0, 0);
+            setIsOpen(false);
           }}
           to={"/"}>
           Releases
         </Link>
         <Link
           onClick={() => {
-            scrollTo(0, 0), setIsOpen(false);
+            scrollTo(0, 0);
+            setIsOpen(false);
           }}
           to={"/favorite"}>
           Favorite
