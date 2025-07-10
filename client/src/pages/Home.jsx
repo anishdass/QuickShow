@@ -10,6 +10,7 @@ const Home = () => {
       <HeroSection />
       <FeaturedSection />
       <TrailerSection />
+      <Movies />
     </div>
   );
 };

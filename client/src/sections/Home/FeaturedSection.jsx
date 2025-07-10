@@ -25,7 +25,7 @@ const FeaturedSection = () => {
       {/* Featured Movies */}
       <div className=' flex items-center gap-8 mt-8 max-sm:justify-center'>
         {dummyShowsData.slice(0, 4).map((movie) => (
-          <MovieCard movie={movie} />
+          <MovieCard key={movie._id} movie={movie} />
         ))}
       </div>
 

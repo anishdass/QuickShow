@@ -37,6 +37,8 @@ const HeroSection = () => {
         himself the prime target of a manhunt after discovering an orb wanted by
         Ronan the Accuser.
       </p>
+
+      {/* Explore Button */}
       <button
         className=' flex items-center gap-1 px-6 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer'
         onClick={() => navigate("/movies")}>

@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className='px-6 pt-8 md:px-16 lg:px-36 w-full text-gray-300'>
       <div className='flex flex-col md:flex-row justify-between w-full gap-10 border-b border-gray-500 pb-10'>
         <div className='md:max-w-96'>
-          <img alt='' class='h-11' src={assets.logo} />
+          <img alt='' className='h-11' src={assets.logo} />
           <p className='mt-6 text-sm'>
             Book tickets in seconds, anytime, anywhere. <br /> From movies to
             live shows — your seat is just a tap away. <br /> Easy browsing,
