@@ -1,33 +1,12 @@
 import { Heart, HeartIcon, StarIcon } from "lucide-react";
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { timeFormat } from "../lib/timeFormat";
 import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
 
 const MovieCard = ({ movie }) => {
-  const { favoriteMovies, setFavoriteMovies } = useContext(AppContext);
-  useEffect(() => {
-    const storedFavorites = localStorage.getItem("favoriteMovies");
-    if (storedFavorites) {
-      setFavoriteMovies(JSON.parse(storedFavorites));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("favoriteMovies", JSON.stringify(favoriteMovies));
-  }, [favoriteMovies]);
-
-  const isFavorited = favoriteMovies.some((fav) => fav._id === movie._id);
-
-  const toggleFavorite = () => {
-    if (isFavorited) {
-      setFavoriteMovies(favoriteMovies.filter((fav) => fav._id !== movie._id));
-    } else {
-      setFavoriteMovies([...favoriteMovies, movie]);
-    }
-  };
-
+  const { toggleFavorite, isFavorited } = useContext(AppContext);
   const navigate = useNavigate();
 
   return (
@@ -45,9 +24,9 @@ const MovieCard = ({ movie }) => {
 
         <div
           className='absolute top-2 right-2 cursor-pointer'
-          onClick={toggleFavorite}>
-          {isFavorited ? (
-            <HeartIcon className='text-red-500' />
+          onClick={() => toggleFavorite(movie)}>
+          {isFavorited(movie) ? (
+            <Heart className=' fill-current text-primary' />
           ) : (
             <Heart className='text-white' />
           )}
