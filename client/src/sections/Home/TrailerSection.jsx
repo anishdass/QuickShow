@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ReactPlayer from "react-player";
-import { dummyTrailers } from "../../../assets/assets";
-import BlurCircle from "../../BlurCircle";
+import { dummyTrailers } from "../../assets/assets";
+import BlurCircle from "../../components/BlurCircle";
 import { PlayCircle } from "lucide-react";
 
 const TrailerSection = () => {
@@ -34,7 +34,8 @@ const TrailerSection = () => {
                 setCurrentMovie(selectedMovie);
                 setOtherMovies(
                   dummyTrailers.filter(
-                    (otherMovie) => otherMovie.videoUrl !== selectedMovie.videoUrl
+                    (otherMovie) =>
+                      otherMovie.videoUrl !== selectedMovie.videoUrl
                   )
                 );
               }}

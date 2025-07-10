@@ -1,11 +1,11 @@
 import React from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import Navbar from "./components/sections/Navbar";
-import Footer from "./components/sections/Footer";
+import Navbar from "./sections/Navbar";
+import Footer from "./sections/Footer";
 import Home from "./pages/Home";
 import MovieDetails from "./pages/MovieDetails";
 import MyBookings from "./pages/MyBookings";
-import Movies from "./pages/Movies";
+import Movies from "./sections/Home/Movies";
 import SeatLayout from "./pages/SeatLayout";
 import Favorite from "./pages/Favorite";
 import { Toaster } from "react-hot-toast";

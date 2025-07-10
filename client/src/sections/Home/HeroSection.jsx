@@ -1,5 +1,5 @@
 import React from "react";
-import { assets } from "../../../assets/assets";
+import { assets } from "../../assets/assets";
 import { ArrowRight, Calendar1Icon, ClockIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
