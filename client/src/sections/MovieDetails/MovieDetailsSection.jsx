@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { timeFormat } from "../../lib/timeFormat";
+import { timeFormat } from "../../lib/utils";
 import { AppContext } from "../../context/AppContext";
 import BlurCircle from "../../components/BlurCircle";
 import { Heart, StarIcon, PlayCircle } from "lucide-react";

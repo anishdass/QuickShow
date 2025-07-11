@@ -1,7 +1,7 @@
 import { Heart, HeartIcon, StarIcon } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { timeFormat } from "../lib/timeFormat";
+import { timeFormat } from "../lib/utils";
 import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
 
