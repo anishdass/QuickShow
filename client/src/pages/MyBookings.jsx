@@ -69,16 +69,16 @@ const MyBookings = () => {
                   Pay Now
                 </button>
               )}
-              <div className=' text-sm'>
-                <p>
-                  <span className=' text-gray-400'>Total Tickets: </span>
-                  {booking.bookedSeats.length}
-                </p>
-                <p>
-                  <span className=' text-gray-400'>Seat nos: </span>
-                  {booking.bookedSeats.join(", ")}
-                </p>
-              </div>
+            </div>
+            <div className=' text-sm'>
+              <p>
+                <span className=' text-gray-400'>Total Tickets: </span>
+                {booking.bookedSeats.length}
+              </p>
+              <p>
+                <span className=' text-gray-400'>Seat nos: </span>
+                {booking.bookedSeats.join(", ")}
+              </p>
             </div>
           </div>
         </div>
