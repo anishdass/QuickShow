@@ -12,6 +12,16 @@ export const dateFormat = (dateString) => {
   return `${year}-${month}-${day}`;
 };
 
+export const completeDateFormat = (dateString) => {
+  return new Date(dateString).toLocaleDateString("en-us", {
+    weekday: "short",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  });
+};
+
 export const isoTimeFormat = (dateTime) => {
   const date = new Date(dateTime);
   const localTime = date.toLocaleDateString("en-us", {
@@ -20,5 +30,5 @@ export const isoTimeFormat = (dateTime) => {
     hour12: true,
   });
 
-  return localTime.split(",")[1];
+  return localTime;
 };
