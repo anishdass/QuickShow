@@ -2,7 +2,9 @@ import React from 'react'
 
 const AddShows = () => {
   return (
-    <div>AddShows</div>
+    <div>
+        
+    </div>
   )
 }
 
