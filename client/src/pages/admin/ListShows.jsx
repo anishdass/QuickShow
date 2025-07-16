@@ -5,14 +5,11 @@ import Loading from "../../components/Loading";
 import { completeDateFormat, isoTimeFormat } from "../../lib/utils";
 
 const ListShows = () => {
-  // get currency
   const currency = import.meta.env.VITE_CURRENCY;
 
-  // State variable for shows and loading
   const [shows, setShows] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // getAllShows function
   const getAllShows = () => {
     setShows([
       {
@@ -29,7 +26,6 @@ const ListShows = () => {
     setLoading(false);
   };
 
-  // useEffect to getAllShows
   useEffect(() => {
     getAllShows();
   }, []);
@@ -38,6 +34,7 @@ const ListShows = () => {
     <>
       {/* Title */}
       <Title text1={"List"} text2={"Shows"} />
+
       {/* Table */}
       <div className=' max-w-4xl mt-6 overflow-x-auto'>
         <table className=' w-full border-collapse rounded-md overflow-hidden text-nowrap'>
@@ -56,7 +53,7 @@ const ListShows = () => {
                 key={show._id}>
                 <td className=' p-2 min-w-45 pl-5'>{show.movie.title}</td>
                 <td className=' p-2'>
-                  {completeDateFormat(isoTimeFormat(show.showDateTime))}
+                  {completeDateFormat(show.showDateTime)}
                 </td>
                 <td className=' p-2'>
                   {Object.keys(show.occupiedSeats).length}
@@ -70,8 +67,6 @@ const ListShows = () => {
           </tbody>
         </table>
       </div>
-      {/* thead */}
-      {/* tbody */}
     </>
   ) : (
     <Loading />

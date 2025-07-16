@@ -32,3 +32,7 @@ export const isoTimeFormat = (dateTime) => {
 
   return localTime;
 };
+
+export const kConverter = (num) => {
+  return (num / 1000).toFixed(1) + "k";
+};
