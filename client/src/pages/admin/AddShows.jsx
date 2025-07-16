@@ -6,6 +6,7 @@ import NowPlayingMoviesSection from "../../sections/admin/AddShows/NowPlayingMov
 import DisplaySelectedTimeSection from "../../sections/admin/AddShows/DisplaySelectedTimeSection";
 import DateAndTimeSection from "../../sections/admin/AddShows/DateAndTimeSection";
 import PriceInputSection from "../../sections/admin/AddShows/PriceInPutSection";
+import { toast } from "react-hot-toast";
 
 const AddShows = () => {
   // get currency
@@ -24,10 +25,16 @@ const AddShows = () => {
   };
 
   const handleDateTimeAdd = () => {
-    if (!dateTimeInput) return;
+    if (!dateTimeInput) {
+      toast.error("Incorrect input");
+      return;
+    }
 
     const [date, time] = dateTimeInput.split("T");
-    if (!date || !time) return;
+    if (!date || !time) {
+      toast.error("Incorrect input");
+      return;
+    }
 
     setDateTimeSelection((prev) => {
       const times = prev[date] || [];
@@ -49,13 +56,21 @@ const AddShows = () => {
     });
   };
 
+  const toggleSelectedMovie = (movieId) => {
+    if (selectedMovie === null) {
+      setSelectedMovie(movieId);
+    } else {
+      setSelectedMovie(null);
+    }
+  };
+
+  const handleAddShows = () => {
+    toast.success("Shows Added");
+  };
+
   useEffect(() => {
     fetchNowPlayingMovies();
   }, []);
-
-  if (nowPlayingMovies.length > 0) {
-    console.log(dateTimeSelection);
-  }
 
   return nowPlayingMovies.length > 0 ? (
     <>
@@ -66,8 +81,8 @@ const AddShows = () => {
       {/* Now Playing movies */}
       <NowPlayingMoviesSection
         nowPlayingMovies={nowPlayingMovies}
-        setSelectedMovie={setSelectedMovie}
         selectedMovie={selectedMovie}
+        toggleSelectedMovie={toggleSelectedMovie}
       />
 
       {/* Price input */}
@@ -91,7 +106,9 @@ const AddShows = () => {
           handleRemoveTime={handleRemoveTime}
         />
       )}
-      <button className=' bg-primary text-white px-8 py-2 mt-6 rounded hover:bg-primary/90 transition-all cursor-pointer'>
+      <button
+        onClick={handleAddShows}
+        className=' bg-primary text-white px-8 py-2 mt-6 rounded hover:bg-primary/90 transition-all cursor-pointer'>
         Add Shows
       </button>
     </>

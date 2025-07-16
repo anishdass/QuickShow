@@ -14,6 +14,8 @@ const DateAndTimeSection = ({
         <input
           type='datetime-local'
           value={dateTimeInput}
+          min='2023-01-01T00:00'
+          max='2030-12-31T23:59'
           onChange={(e) => setDateTimeInput(e.target.value)}
           className=' outline-none rounded-md text-gray-400'
         />

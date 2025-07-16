@@ -4,8 +4,8 @@ import { StarIcon, CheckIcon } from "lucide-react";
 
 const NowPlayingMoviesSection = ({
   nowPlayingMovies,
-  setSelectedMovie,
   selectedMovie,
+  toggleSelectedMovie,
 }) => {
   return (
     <div className=' overflow-x-auto pb-4'>
@@ -13,7 +13,7 @@ const NowPlayingMoviesSection = ({
         {nowPlayingMovies.map((movie) => (
           <div
             key={movie._id}
-            onClick={() => setSelectedMovie(movie._id)}
+            onClick={() => toggleSelectedMovie(movie._id)}
             className={` relative max-w-40 cursor-pointer group-hover:not-hover:opacity-40 hover:-translate-y-1 transition duration-300`}>
             <div className=' relative rounded-lg overflow-hidden'>
               <img

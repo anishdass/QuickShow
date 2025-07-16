@@ -19,10 +19,6 @@ const ListBookings = () => {
     getAllBookings();
   }, []);
 
-  if (bookings.length > 0) {
-    console.log(bookings[0]);
-  }
-
   return !loading ? (
     <>
       {/* Title */}

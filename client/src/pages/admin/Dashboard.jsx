@@ -56,8 +56,6 @@ const Dashboard = () => {
     fetchDashboardData();
   }, []);
 
-  console.log(dummyDashboardData);
-
   return !loading ? (
     <>
       <Title text1={"Admin"} text2={"Dashboard"} />
