@@ -5,6 +5,7 @@ import { connectDB } from "./config/db.js";
 import { clerkMiddleware } from "@clerk/express";
 import { serve } from "inngest/express";
 import { inngest, functions } from "./inngest/index.js";
+import { showRouter } from "./routes/showRouter.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,7 +20,8 @@ app.listen(port, () =>
 app.use(express.json());
 app.use(clerkMiddleware());
 app.use(cors());
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 // Routes
 app.get("/", (req, res) => res.send("Server is Live!"));
-app.use("/api/inngest", serve({ client: inngest, functions }));
+app.use("/api/show", showRouter);

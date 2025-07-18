@@ -41,6 +41,7 @@ const AddShows = () => {
       if (!times.includes(time)) {
         return { ...prev, [date]: [...times, time] };
       }
+      console.log(prev);
       return prev;
     });
   };
@@ -57,6 +58,7 @@ const AddShows = () => {
   };
 
   const toggleSelectedMovie = (movieId) => {
+    console.log(movieId);
     if (selectedMovie === null) {
       setSelectedMovie(movieId);
     } else {
@@ -92,7 +94,7 @@ const AddShows = () => {
         setShowPrice={setShowPrice}
       />
 
-      {/* Date and time selection */}
+      {/* show details selection */}
       <DateAndTimeSection
         dateTimeInput={dateTimeInput}
         setDateTimeInput={setDateTimeInput}

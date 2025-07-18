@@ -1,0 +1,35 @@
+export const getMovieData = (movieDetails, movieCast) => {
+  const movieData = {
+    _id: movieDetails.data.id,
+    title: movieDetails.data.original_title,
+    overview: movieDetails.data.overview,
+    poster_path: movieDetails.data.poster_path,
+    backdrop_path: movieDetails.data.backdrop_path,
+    release_date: movieDetails.data.release_date,
+    original_language: movieDetails.data.original_language,
+    tagline: movieDetails.data.tagline,
+    genres: movieDetails.data.genres,
+    casts: movieCast.data.cast,
+    vote_average: movieDetails.data.vote_average,
+    runtime: movieDetails.data.runtime,
+    adult: movieDetails.data.adult,
+  };
+  return movieData;
+};
+
+export const getShowsData = (showDateTimeData, movieId, showPrice) => {
+  let showsData = [];
+  let showTimings = "";
+  Object.keys(showDateTimeData).forEach((date) =>
+    showDateTimeData[date].forEach((time) => {
+      showTimings = `${date}T${time}`;
+      showsData.push({
+        movie: movieId,
+        showDateTime: new Date(showTimings),
+        showPrice,
+        occupiedSeats: {},
+      });
+    })
+  );
+  return showsData;
+};
