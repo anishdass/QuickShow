@@ -1,6 +1,7 @@
 import Movie from "../models/Movie.js";
 import Shows from "../models/Shows.js";
 import Booking from "../models/Booking.js";
+import User from "../models/User.js";
 
 // Shows Calls
 // Add Shows
@@ -49,7 +50,7 @@ export const addNewMovie = async (movieData) => {
 
 // Booking calls
 // create booking
-export const createBooking = (currentShow, selectedSeats, userId, showId) => {
+export const bookTickets = (currentShow, selectedSeats, userId, showId) => {
   const booking = Booking.create({
     user: userId,
     show: showId,
@@ -58,3 +59,36 @@ export const createBooking = (currentShow, selectedSeats, userId, showId) => {
   });
   return booking;
 };
+
+// get booking
+export const getBookings = async () => {
+  const bookings = await Booking.find({})
+    .populate("user")
+    .populate({ path: "show", populate: { path: "movieId" } })
+    .sort({ createdAt: -1 });
+  return bookings;
+};
+
+// paid booking
+export const getPaidBookings = async () => {
+  const bookings = await Booking.find({ isPaid: true });
+  return bookings;
+};
+
+// user calls
+// count users
+export const getUsers = async () => {
+  const totalUsers = await User.countDocuments();
+  return totalUsers;
+};
+
+// get User Booking
+export const getUserBookings = async (userId) => {
+  const bookings = await Booking.find({ user: userId })
+    .populate({ path: "show", populate: { path: "movieId" } })
+    .sort({ createdAt: -1 });
+  return bookings;
+};
+
+// add favorite
+export const addFavorite = () => {};

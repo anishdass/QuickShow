@@ -7,6 +7,8 @@ import { serve } from "inngest/express";
 import { inngest, functions } from "./inngest/index.js";
 import { showRouter } from "./routes/showRouter.js";
 import { bookingRouter } from "./routes/bookingRouter.js";
+import { adminRouter } from "./routes/adminRouter.js";
+import { userRouter } from "./routes/userRouter.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -29,3 +31,7 @@ app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use("/api/show", showRouter);
 // Booking
 app.use("/api/booking", bookingRouter);
+// Admin
+app.use("/api/admin", adminRouter);
+// User
+app.use("/api/user", userRouter);
