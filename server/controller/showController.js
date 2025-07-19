@@ -1,5 +1,11 @@
 import { getMovieData, getShowsData } from "../utils/utils.js";
-import { addNewMovie, findMovie, addNewShows } from "../utils/utilsDB.js";
+import {
+  addNewMovie,
+  findMovie,
+  addNewShows,
+  getShows,
+  getUpcomingShows,
+} from "../utils/utilsDB.js";
 import { getCastDetails, getMovieDetails } from "../utils/utilsAPI.js";
 
 const Authorization = `Bearer ${process.env.TMDB_API_KEY}`;
@@ -41,5 +47,46 @@ export const addShows = async (req, res) => {
     res.json({ success: true, data: "Shows Added Successfully" });
   } catch (error) {
     res.json({ success: false, message: error.message });
+  }
+};
+
+// Get all the upcoming shows from the database
+export const getAllUpcomingShows = async (req, res) => {
+  try {
+    const shows = await getShows();
+
+    // Filter uniques shows
+    const uniqueShows = new Set(shows.map((show) => show.movieId));
+
+    return res.json({ success: true, data: Array.from(uniqueShows) });
+  } catch (error) {
+    console.log(error.message);
+    return res.json({ success: true, data: error.message });
+  }
+};
+
+// API to get all the upcoming shows of a movie from the database
+export const getAllUpcomingShowsOf = async (req, res) => {
+  try {
+    // Movie Id
+    const { movieId } = req.params;
+    // Movie
+    const movie = await findMovie(movieId);
+    // Upcoming shows for the particular movie
+    const upcomingShows = await getUpcomingShows(movieId);
+
+    const dateTime = {};
+    upcomingShows.forEach((show) => {
+      const date = show.showDateTime.toISOString().split("T")[0];
+      if (!dateTime[date]) {
+        dateTime[date] = [];
+      }
+      dateTime[date].push({ time: show.showDateTime, showId: show._id });
+    });
+
+    return res.json({ success: true, data: movie, dateTime });
+  } catch (error) {
+    console.log(error.message);
+    return res.json({ success: true, data: error.message });
   }
 };

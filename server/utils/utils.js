@@ -1,3 +1,5 @@
+import { getCurrentShow } from "./utilsDB.js";
+
 export const getMovieData = (movieDetails, movieCast) => {
   const movieData = {
     _id: movieDetails.data.id,
@@ -24,7 +26,7 @@ export const getShowsData = (showDateTimeData, movieId, showPrice) => {
     showDateTimeData[date].forEach((time) => {
       showTimings = `${date}T${time}`;
       showsData.push({
-        movie: movieId,
+        movieId,
         showDateTime: new Date(showTimings),
         showPrice,
         occupiedSeats: {},
@@ -32,4 +34,29 @@ export const getShowsData = (showDateTimeData, movieId, showPrice) => {
     })
   );
   return showsData;
+};
+
+// Function to check availabilty of selected Seats
+export const checkAvailabilityOfSelectedSeats = async (
+  selectedSeats,
+  showId
+) => {
+  try {
+    const currentShow = await getCurrentShow(showId);
+
+    if (!currentShow) {
+      return res.json({ success: false, message: "Incorrect show" });
+    }
+
+    const occupiedSeats = currentShow.occupiedSeats;
+
+    const isAnySeatOccupied = selectedSeats.some((seat) => occupiedSeats[seat]);
+    return isAnySeatOccupied;
+  } catch (error) {
+    console.log(error.message);
+    return res.json({
+      success: false,
+      message: "Error checking seat availability",
+    });
+  }
 };

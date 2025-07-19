@@ -1,9 +1,14 @@
 import express from "express";
-import { addShows, getNowPlayingMovies } from "../controller/showController.js";
+import {
+  addShows,
+  getNowPlayingMovies,
+  getAllUpcomingShows,
+  getAllUpcomingShowsOf,
+} from "../controller/showController.js";
 
-const showRouter = express.Router();
+export const showRouter = express.Router();
 
 showRouter.get("/now-playing", getNowPlayingMovies);
 showRouter.get("/add-shows", addShows);
-
-export { showRouter };
+showRouter.get("/all", getAllUpcomingShows);
+showRouter.get("/:movieId", getAllUpcomingShowsOf);
