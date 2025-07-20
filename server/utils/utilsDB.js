@@ -90,5 +90,7 @@ export const getUserBookings = async (userId) => {
   return bookings;
 };
 
-// add favorite
-export const addFavorite = () => {};
+export const findUser = async (userId) => {
+  let user = await User.findById(userId);
+  return user;
+};
