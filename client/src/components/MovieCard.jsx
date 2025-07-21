@@ -1,4 +1,4 @@
-import { Heart, HeartIcon, StarIcon } from "lucide-react";
+import { Heart, StarIcon } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { timeFormat } from "../lib/utils";
@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
 
 const MovieCard = ({ movie }) => {
-  const { toggleFavorite, isFavorited } = useContext(AppContext);
+  const { toggleFavorite } = useContext(AppContext);
   const navigate = useNavigate();
 
   return (
@@ -24,13 +24,7 @@ const MovieCard = ({ movie }) => {
 
         <div
           className='absolute top-2 right-2 cursor-pointer'
-          onClick={() => toggleFavorite(movie)}>
-          {isFavorited(movie) ? (
-            <Heart className=' fill-current text-primary' />
-          ) : (
-            <Heart className='text-white' />
-          )}
-        </div>
+          onClick={() => toggleFavorite(movie)}></div>
       </div>
 
       <p className='font-semibold mt-2 truncate'>{movie.title}</p>

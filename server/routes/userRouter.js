@@ -5,6 +5,7 @@ import {
   deleteUserFavorites,
   deleteUserWatchlist,
   getBookings,
+  getUserData,
   getUserFavorites,
   getUserWatchlist,
 } from "../controller/userController.js";
@@ -12,6 +13,7 @@ import {
 export const userRouter = express.Router();
 
 userRouter.get("/bookings", getBookings);
+userRouter.post("/get-user", getUserData);
 userRouter.get("/add-favorites", addUserFavorites);
 userRouter.get("/remove-favorites", deleteUserFavorites);
 userRouter.get("/favorites", getUserFavorites);

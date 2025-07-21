@@ -1,4 +1,3 @@
-import { clerkClient } from "@clerk/express";
 import { findUser, getUserBookings } from "../utils/utilsDB.js";
 
 import User from "../models/User.js";
@@ -13,6 +12,19 @@ export const getBookings = async (req, res) => {
   } catch (error) {
     console.log(error.message);
     return res.json({ success: false, message: "Unable to get user bookings" });
+  }
+};
+
+// API to get user data
+export const getUserData = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const user = await User.findById(userId);
+    return res.json({ success: true, data: user });
+  } catch (error) {
+    console.log(error.message);
+    return res.json({ success: false, message: "Unable to get user" });
   }
 };
 

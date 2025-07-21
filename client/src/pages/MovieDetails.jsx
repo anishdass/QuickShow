@@ -6,7 +6,6 @@ import { dummyTrailers } from "../assets/assets";
 import CastSection from "../sections/MovieDetails/CastSection";
 import MovieDetailsSection from "../sections/MovieDetails/MovieDetailsSection";
 import MovieCard from "../components/MovieCard";
-import { Loader, Loader2 } from "lucide-react";
 import Loading from "../components/Loading";
 
 const MovieDetails = () => {
@@ -15,7 +14,7 @@ const MovieDetails = () => {
 
   const [show, setShow] = useState(null);
 
-  const onShowTrailer = (movie) => {
+  const onShowTrailer = () => {
     window.open(dummyTrailers[0].videoUrl);
   };
 

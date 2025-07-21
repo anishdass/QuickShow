@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { dummyBookingData } from "../assets/assets";
 import Loading from "../components/Loading";
 import BlurCircle from "../components/BlurCircle";
-import { completeDateFormat, isoTimeFormat, timeFormat } from "../lib/utils";
+import { completeDateFormat, timeFormat } from "../lib/utils";
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState(null);

@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { MenuIcon, SearchIcon, TicketPlus, XIcon } from "lucide-react";
 import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
+import { AppContext } from "../context/AppContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useUser();
   const { openSignIn } = useClerk();
-
   const navigate = useNavigate();
+  const { isAdmin } = useContext(AppContext);
 
   return (
     <div className=' fixed top-0 left-0 z-50 w-full flex items-center justify-between px-6 md:px-16 lg:px-36 py-5'>
@@ -79,15 +80,24 @@ const Navbar = () => {
             Login
           </button>
         ) : (
-          <UserButton>
-            <UserButton.MenuItems>
-              <UserButton.Action
-                label='My Bookings'
-                labelIcon={<TicketPlus width={15} />}
-                onClick={() => navigate("/my-bookings")}
-              />
-            </UserButton.MenuItems>
-          </UserButton>
+          <div className='flex flex-col items-center space-y-2'>
+            <UserButton>
+              <UserButton.MenuItems>
+                <UserButton.Action
+                  label='My Bookings'
+                  labelIcon={<TicketPlus width={15} />}
+                  onClick={() => navigate("/my-bookings")}
+                />
+              </UserButton.MenuItems>
+            </UserButton>
+
+            <button
+              className={`px-2 py-1 text-sm rounded-md text-white shadow-sm transition-all duration-200 opacity-80
+    ${isAdmin ? "bg-yellow-500" : "bg-gray-500"}
+    hover:opacity-100 hover:shadow-md`}>
+              {isAdmin ? "Admin" : "User"}
+            </button>
+          </div>
         )}
       </div>
 

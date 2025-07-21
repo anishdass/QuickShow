@@ -1,46 +1,72 @@
-import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import { createContext, useState, useEffect } from "react";
+import { useAuth, useUser } from "@clerk/clerk-react";
+import { toast } from "react-hot-toast";
+import { useLocation, useNavigate } from "react-router-dom";
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 export const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
-  const [favoriteMovies, setFavoriteMovies] = useState([]);
+  let clerkUser = useUser().user;
+  let { getToken } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // Load favorites from localStorage once
-  useEffect(() => {
-    const stored = localStorage.getItem("favoriteMovies");
-    if (stored) {
-      setFavoriteMovies(JSON.parse(stored));
-    }
-  }, []);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [upcomingShows, setUpcomingShows] = useState([]);
+  const [user, setUser] = useState(false);
 
-  // Save favorites to localStorage on change
-  useEffect(() => {
-    localStorage.setItem("favoriteMovies", JSON.stringify(favoriteMovies));
-  }, [favoriteMovies]);
-
-  const toggleFavorite = (movie) => {
-    const exists = favoriteMovies.some((fav) => fav._id === movie._id);
-    if (exists) {
-      setFavoriteMovies((prev) => prev.filter((fav) => fav._id !== movie._id));
-    } else {
-      setFavoriteMovies((prev) => [...prev, movie]);
+  const getUserData = async () => {
+    try {
+      const { data } = await axios.post("/api/user/get-user", {
+        userId: clerkUser?.id,
+      });
+      data.success ? setUser({ data }) : toast.error(data.message);
+    } catch (error) {
+      toast.message("Something went wrong..");
+      console.log(error.message);
     }
   };
 
-  const isFavorited = (movie) => {
-    return favoriteMovies.some((fav) => fav._id === movie._id);
+  const checkIsAdmin = async () => {
+    try {
+      if (clerkUser) {
+        const { data } = await axios.get("/api/admin/is-admin", {
+          headers: { Authorization: `Bearer ${await getToken()}` },
+        });
+        setIsAdmin(data.success);
+
+        if (!data.success && location.pathname.startsWith("/admin")) {
+          toast.error("Unauthorized to access admin paths");
+          navigate("/");
+        }
+      }
+    } catch (error) {
+      toast.message("Something went wrong..");
+      console.log(error.message);
+    }
   };
 
-  const value = {
-    favoriteMovies,
-    setFavoriteMovies,
-    toggleFavorite,
-    isFavorited,
+  const getShows = async () => {
+    try {
+      const { data } = await axios.get("/api/show/all");
+      data.success ? setUpcomingShows({ data }) : toast.error(data.message);
+    } catch (error) {
+      toast.message("Something went wrong..");
+      console.log(error.message);
+    }
   };
+
+  useEffect(() => {
+    getUserData();
+    checkIsAdmin();
+    getShows();
+  }, [clerkUser]);
+
+  const value = { axios, isAdmin, user, upcomingShows };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
