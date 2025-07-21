@@ -13,11 +13,11 @@ const NowPlayingMoviesSection = ({
         {nowPlayingMovies.map((movie) => (
           <div
             key={movie._id}
-            onClick={() => toggleSelectedMovie(movie._id)}
+            onClick={() => toggleSelectedMovie(movie.id)}
             className={` relative max-w-40 cursor-pointer group-hover:not-hover:opacity-40 hover:-translate-y-1 transition duration-300`}>
             <div className=' relative rounded-lg overflow-hidden'>
               <img
-                src={movie.poster_path}
+                src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
                 alt='poster'
                 className=' w-full object-cover brightness-90'
               />
@@ -32,7 +32,7 @@ const NowPlayingMoviesSection = ({
                 </p>
               </div>
             </div>
-            {selectedMovie === movie._id && (
+            {selectedMovie === movie.id && (
               <div className=' absolute top-2 right-2 flex items-center justify-center bg-primary h6 w6 rounded'>
                 <CheckIcon className=' w-4 h-4 text-white' strokeWidth='2.5' />
               </div>

@@ -9,6 +9,6 @@ import {
 export const showRouter = express.Router();
 
 showRouter.get("/now-playing", getNowPlayingMovies);
-showRouter.get("/add-shows", addShows);
+showRouter.post("/add-shows", addShows);
 showRouter.get("/all", getAllUpcomingShows);
 showRouter.get("/:movieId", getAllUpcomingShowsOf);

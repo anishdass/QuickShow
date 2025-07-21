@@ -7,13 +7,19 @@ import {
   getUpcomingShows,
 } from "../utils/utilsDB.js";
 import { getCastDetails, getMovieDetails } from "../utils/utilsAPI.js";
+import axios from "axios";
 
 const Authorization = `Bearer ${process.env.TMDB_API_KEY}`;
 
 // Now Playing movies
 export const getNowPlayingMovies = async (req, res) => {
   try {
-    const response = getNowPlayingMovies();
+    const response = await axios.get(
+      "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1",
+      {
+        headers: { Authorization },
+      }
+    );
     return res.json({ success: true, data: response.data });
   } catch (error) {
     console.log(error.message);

@@ -66,7 +66,7 @@ export const AppContextProvider = ({ children }) => {
     getShows();
   }, [clerkUser]);
 
-  const value = { axios, isAdmin, user, upcomingShows };
+  const value = { axios, isAdmin, user, upcomingShows, checkIsAdmin };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

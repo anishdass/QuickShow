@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { dummyShowsData } from "../../assets/assets";
+import React, { useContext, useEffect, useState } from "react";
 import Title from "../../components/admin/Title";
 import Loading from "../../components/Loading";
 import NowPlayingMoviesSection from "../../sections/admin/AddShows/NowPlayingMoviesSection";
@@ -7,6 +6,7 @@ import DisplaySelectedTimeSection from "../../sections/admin/AddShows/DisplaySel
 import DateAndTimeSection from "../../sections/admin/AddShows/DateAndTimeSection";
 import PriceInputSection from "../../sections/admin/AddShows/PriceInPutSection";
 import { toast } from "react-hot-toast";
+import { AppContext } from "../../context/AppContext";
 
 const AddShows = () => {
   // get currency
@@ -18,10 +18,19 @@ const AddShows = () => {
   const [dateTimeSelection, setDateTimeSelection] = useState({});
   const [dateTimeInput, setDateTimeInput] = useState("");
   const [showPrice, setShowPrice] = useState("");
+  const [buying, setBuying] = useState(false);
+  const { axios } = useContext(AppContext);
 
   // fetchNowPlayingMovies
-  const fetchNowPlayingMovies = () => {
-    setNowPlayingMovies(dummyShowsData);
+  const fetchNowPlayingMovies = async () => {
+    try {
+      const { data } = await axios.get("/api/show/now-playing");
+      const movies = data.data.results;
+      setNowPlayingMovies(movies);
+    } catch (error) {
+      console.log(error.message);
+      toast.error("Unable to fetch movies");
+    }
   };
 
   const handleDateTimeAdd = () => {
@@ -58,7 +67,6 @@ const AddShows = () => {
   };
 
   const toggleSelectedMovie = (movieId) => {
-    console.log(movieId);
     if (selectedMovie === null) {
       setSelectedMovie(movieId);
     } else {
@@ -66,8 +74,30 @@ const AddShows = () => {
     }
   };
 
-  const handleAddShows = () => {
-    toast.success("Shows Added");
+  const handleAddShows = async () => {
+    try {
+      setBuying(true);
+      if (!showPrice || Object.keys(dateTimeSelection).length === 0) {
+        toast.error("Missing Values");
+      } else {
+        const payLoad = {
+          movieId: selectedMovie,
+          showPrice,
+          showDateTimeData: dateTimeSelection,
+        };
+        const { data } = await axios.post("/api/show/add-shows", payLoad);
+        if (data.success) {
+          toast.success("Shows added");
+          setShowPrice("");
+          setDateTimeSelection({});
+          setDateTimeInput("");
+        }
+      }
+    } catch (error) {
+      console.log(error.message);
+      toast.error("Unable to add shows");
+    }
+    setBuying(false);
   };
 
   useEffect(() => {
@@ -77,7 +107,6 @@ const AddShows = () => {
   return nowPlayingMovies.length > 0 ? (
     <>
       <Title text1={"Add"} text2={"Shows"} />
-
       <p className=' mt-10 text-lg font-medium'>Now playing movies</p>
 
       {/* Now Playing movies */}
@@ -87,19 +116,25 @@ const AddShows = () => {
         toggleSelectedMovie={toggleSelectedMovie}
       />
 
-      {/* Price input */}
-      <PriceInputSection
-        showPrice={showPrice}
-        currency={currency}
-        setShowPrice={setShowPrice}
-      />
+      {selectedMovie ? (
+        <PriceInputSection
+          showPrice={showPrice}
+          currency={currency}
+          setShowPrice={setShowPrice}
+        />
+      ) : (
+        <></>
+      )}
 
-      {/* show details selection */}
-      <DateAndTimeSection
-        dateTimeInput={dateTimeInput}
-        setDateTimeInput={setDateTimeInput}
-        handleDateTimeAdd={handleDateTimeAdd}
-      />
+      {selectedMovie ? (
+        <DateAndTimeSection
+          dateTimeInput={dateTimeInput}
+          setDateTimeInput={setDateTimeInput}
+          handleDateTimeAdd={handleDateTimeAdd}
+        />
+      ) : (
+        <></>
+      )}
 
       {/* Display selected time */}
       {Object.keys(dateTimeSelection).length > 0 && (
@@ -108,11 +143,17 @@ const AddShows = () => {
           handleRemoveTime={handleRemoveTime}
         />
       )}
-      <button
-        onClick={handleAddShows}
-        className=' bg-primary text-white px-8 py-2 mt-6 rounded hover:bg-primary/90 transition-all cursor-pointer'>
-        Add Shows
-      </button>
+
+      {selectedMovie ? (
+        <button
+          onClick={handleAddShows}
+          disabled={buying}
+          className=' bg-primary text-white px-8 py-2 mt-6 rounded hover:bg-primary/90 transition-all cursor-pointer'>
+          Add Shows
+        </button>
+      ) : (
+        <></>
+      )}
     </>
   ) : (
     <Loading />

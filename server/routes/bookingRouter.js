@@ -1,5 +1,4 @@
 import express from "express";
-import { adminAuth } from "../middleware/auth.js";
 import {
   createBooking,
   getOccupiedSeats,
