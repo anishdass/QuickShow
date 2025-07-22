@@ -1,28 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { dummyDateTimeData, dummyShowsData } from "../../assets/assets";
 import Title from "../../components/admin/Title";
 import Loading from "../../components/Loading";
 import { completeDateFormat, isoTimeFormat } from "../../lib/utils";
+import { AppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 const ListShows = () => {
   const currency = import.meta.env.VITE_CURRENCY;
 
   const [shows, setShows] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { axios } = useContext(AppContext);
 
-  const getAllShows = () => {
-    setShows([
-      {
-        movie: dummyShowsData[0],
-        showDateTime: dummyDateTimeData["2025-07-24"][0].time,
-        showPrice: 59,
-        occupiedSeats: {
-          A1: "user_1",
-          B1: "user_2",
-          C1: "user_3",
-        },
-      },
-    ]);
+  const getAllShows = async () => {
+    try {
+      const shows = await axios.get("/api/admin/upcoming-shows");
+      setShows(shows.data.data);
+    } catch (error) {
+      console.log(error.message);
+      toast.error("Unable to get show");
+    }
     setLoading(false);
   };
 
@@ -32,41 +30,46 @@ const ListShows = () => {
 
   return !loading ? (
     <>
-      {/* Title */}
-      <Title text1={"List"} text2={"Shows"} />
-
-      {/* Table */}
-      <div className=' max-w-4xl mt-6 overflow-x-auto'>
-        <table className=' w-full border-collapse rounded-md overflow-hidden text-nowrap'>
-          <thead>
-            <tr className=' bg-primary/20 text-left text-white'>
-              <th className=' p-2 font-medium pl-5'>Movie Name</th>
-              <th className=' p-2 font-medium'>Showtime</th>
-              <th className=' p-2 font-medium'>Total shows</th>
-              <th className=' p-2 font-medium'>Earnings</th>
-            </tr>
-          </thead>
-          <tbody className=' text-sm font-light'>
-            {shows.map((show) => (
-              <tr
-                className=' border-b border-primary/10 bg-primary/5 even:bg-primary/10'
-                key={show._id}>
-                <td className=' p-2 min-w-45 pl-5'>{show.movie.title}</td>
-                <td className=' p-2'>
-                  {completeDateFormat(show.showDateTime)}
-                </td>
-                <td className=' p-2'>
-                  {Object.keys(show.occupiedSeats).length}
-                </td>
-                <td className=' p-2 '>
-                  {currency}{" "}
-                  {Object.keys(show.occupiedSeats).length * show.showPrice}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {shows.length > 0 ? (
+        <>
+          <Title text1={"List"} text2={"Shows"} />
+          <div className=' max-w-4xl mt-6 overflow-x-auto'>
+            <table className=' w-full border-collapse rounded-md overflow-hidden text-nowrap'>
+              <thead>
+                <tr className=' bg-primary/20 text-left text-white'>
+                  <th className=' p-2 font-medium pl-5'>Movie Name</th>
+                  <th className=' p-2 font-medium'>Showtime</th>
+                  <th className=' p-2 font-medium'>Total Bookings</th>
+                  <th className=' p-2 font-medium'>Earnings</th>
+                </tr>
+              </thead>
+              <tbody className=' text-sm font-light'>
+                {shows.map((show) => (
+                  <tr
+                    className=' border-b border-primary/10 bg-primary/5 even:bg-primary/10'
+                    key={show._id}>
+                    <td className=' p-2 min-w-45 pl-5'>{show.movieId.title}</td>
+                    <td className=' p-2'>
+                      {completeDateFormat(show.showDateTime)}
+                    </td>
+                    <td className=' p-2'>
+                      {Object.keys(show.occupiedSeats).length}
+                    </td>
+                    <td className=' p-2 '>
+                      {currency}{" "}
+                      {Object.keys(show.occupiedSeats).length * show.showPrice}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      ) : (
+        <div className=' flex flex-col items-center justify-center h-screen'>
+          <h1 className=' text-3xl font-bold text-center'>No Bookings</h1>
+        </div>
+      )}
     </>
   ) : (
     <Loading />

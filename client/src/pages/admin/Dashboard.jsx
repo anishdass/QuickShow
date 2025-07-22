@@ -53,7 +53,6 @@ const Dashboard = () => {
     try {
       const dashboardData = await axios.get("/api/admin/dashboard");
       setDashboardData(dashboardData.data.data);
-      console.log(dashboardData.data.data);
     } catch (error) {
       console.log(error.message);
       toast.error("Unable to fetch dashboard data");
