@@ -17,6 +17,6 @@ userRouter.post("/get-user", getUserData);
 userRouter.post("/add-favorites", addUserFavorites);
 userRouter.post("/remove-favorites", deleteUserFavorites);
 userRouter.get("/favorites", getUserFavorites);
-userRouter.get("/add-watchlist", addUserWatchlist);
-userRouter.get("/remove-watchlist", deleteUserWatchlist);
+userRouter.post("/add-watchlist", addUserWatchlist);
+userRouter.post("/remove-watchlist", deleteUserWatchlist);
 userRouter.get("/watchlist", getUserWatchlist);

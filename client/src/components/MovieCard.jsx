@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 
 const MovieCard = ({ movie }) => {
   const [favorite, setFavorite] = useState("");
+  const [watchlist, setWatchlist] = useState("");
   const navigate = useNavigate();
   const { axios, user } = useContext(AppContext);
 
@@ -22,6 +23,24 @@ const MovieCard = ({ movie }) => {
     } else {
       setFavorite("");
       const { data } = await axios.post("/api/user/remove-favorites", {
+        movieId: movie._id,
+        userId: user._id,
+      });
+      toast.error(data.message);
+    }
+  };
+
+  const toggleWatchlist = async (movie) => {
+    if (watchlist === "") {
+      setWatchlist(movie._id);
+      const { data } = await axios.post("/api/user/add-watchlist", {
+        movieId: movie._id,
+        userId: user._id,
+      });
+      toast.success(data.message);
+    } else {
+      setWatchlist("");
+      const { data } = await axios.post("/api/user/remove-watchlist", {
         movieId: movie._id,
         userId: user._id,
       });
@@ -44,14 +63,30 @@ const MovieCard = ({ movie }) => {
 
         <div className='absolute top-2 left-2 right-2 z-10 flex justify-between items-center px-2'>
           {/* Watchlist Icon (Clock) */}
-          <div className='bg-white/10 backdrop-blur-sm p-1.5 rounded-full cursor-pointer'>
-            <Clock className='w-5 h-5 text-white hover:text-yellow-400 transition' />
+          <div
+            className={`bg-white/10 backdrop-blur-sm p-1.5 rounded-full cursor-pointer
+          ${
+            watchlist === movie._id
+              ? "hover:bg-yellow-500/20"
+              : "hover:bg-white/20"
+          }`}
+            onClick={() => toggleWatchlist(movie)}>
+            <Clock
+              className={`w-5 h-5 transition 
+        ${
+          watchlist === movie._id
+            ? " text-white fill-orange-500"
+            : "text-white hover:text-orange-400"
+        }`}
+            />
           </div>
 
           {/* Favorite Icon (Heart) */}
           <div
-            className={`bg-white/10 backdrop-blur-sm p-1.5 rounded-full cursor-pointer transition 
-      ${favorite === movie._id ? "hover:bg-red-500/20" : "hover:bg-white/20"}`}
+            className={`bg-white/10 backdrop-blur-sm p-1.5 rounded-full cursor-pointer
+          ${
+            favorite === movie._id ? "hover:bg-red-500/20" : "hover:bg-white/20"
+          }`}
             onClick={() => toggleFavorite(movie)}>
             <Heart
               className={`w-5 h-5 transition 
