@@ -14,8 +14,8 @@ export const userRouter = express.Router();
 
 userRouter.get("/bookings", getBookings);
 userRouter.post("/get-user", getUserData);
-userRouter.get("/add-favorites", addUserFavorites);
-userRouter.get("/remove-favorites", deleteUserFavorites);
+userRouter.post("/add-favorites", addUserFavorites);
+userRouter.post("/remove-favorites", deleteUserFavorites);
 userRouter.get("/favorites", getUserFavorites);
 userRouter.get("/add-watchlist", addUserWatchlist);
 userRouter.get("/remove-watchlist", deleteUserWatchlist);

@@ -31,15 +31,16 @@ export const getUserData = async (req, res) => {
 // API to add to favorite movies
 export const addUserFavorites = async (req, res) => {
   try {
-    const { movieId } = req.body;
-    // const userId = req.auth().userId();
-    const userId = process.env.TEST_USER;
+    const { movieId, userId } = req.body;
+    console.log(movieId);
+    console.log(userId);
     const user = await findUser(userId);
     let favorites = user.favorites;
     if (favorites.includes(movieId)) {
       return res.json({ success: true, message: "Already Added" });
     } else {
       favorites.push(movieId);
+      console.log(favorites);
       const userData = { favorites: favorites };
       await User.findByIdAndUpdate(userId, userData);
       return res.json({ success: true, message: "Favorite Added" });
@@ -56,9 +57,7 @@ export const addUserFavorites = async (req, res) => {
 // API to delete from favorite movies
 export const deleteUserFavorites = async (req, res) => {
   try {
-    const { movieId } = req.body;
-    // const userId = req.auth().userId();
-    const userId = process.env.TEST_USER;
+    const { movieId, userId } = req.body;
     const user = await findUser(userId);
     let favorites = user.favorites;
     if (favorites.includes(movieId)) {

@@ -7,10 +7,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
-export const AppContext = createContext();
+const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
   let clerkUser = useUser().user;
+
   let { getToken } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,7 +25,7 @@ export const AppContextProvider = ({ children }) => {
       const { data } = await axios.post("/api/user/get-user", {
         userId: clerkUser?.id,
       });
-      data.success ? setUser({ data }) : toast.error(data.message);
+      data.success ? setUser(data.data) : toast.error(data.message);
     } catch (error) {
       toast.message("Something went wrong..");
       console.log(error.message);
@@ -53,7 +54,7 @@ export const AppContextProvider = ({ children }) => {
   const getShows = async () => {
     try {
       const { data } = await axios.get("/api/show/all");
-      data.success ? setUpcomingShows({ data }) : toast.error(data.message);
+      data.success ? setUpcomingShows(data.data) : toast.error(data.message);
     } catch (error) {
       toast.message("Something went wrong..");
       console.log(error.message);
@@ -70,3 +71,5 @@ export const AppContextProvider = ({ children }) => {
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
+
+export { AppContext };
