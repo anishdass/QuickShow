@@ -5,15 +5,17 @@ import {
   StarIcon,
   UsersIcon,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { dummyDashboardData } from "../../assets/assets";
+import React, { useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import Loading from "../../components/Loading";
 import Title from "../../components/admin/Title";
 import BlurCircle from "../../components/BlurCircle";
 import { completeDateFormat } from "../../lib/utils";
+import { AppContext } from "../../context/AppContext";
 
 const Dashboard = () => {
   const currency = (import.meta.env.VITE_CURRENCY = "£");
+  const { axios } = useContext(AppContext);
 
   const [dashboardData, setDashboardData] = useState({
     totalBookings: 0,
@@ -42,13 +44,20 @@ const Dashboard = () => {
     },
     {
       title: "Total Users",
-      value: dashboardData?.totalUser,
+      value: dashboardData?.totalUsers,
       icon: UsersIcon,
     },
   ];
 
   const fetchDashboardData = async () => {
-    setDashboardData(dummyDashboardData);
+    try {
+      const dashboardData = await axios.get("/api/admin/dashboard");
+      setDashboardData(dashboardData.data.data);
+      console.log(dashboardData.data.data);
+    } catch (error) {
+      console.log(error.message);
+      toast.error("Unable to fetch dashboard data");
+    }
     setLoading(false);
   };
 
@@ -85,12 +94,12 @@ const Dashboard = () => {
             {/* Poster */}
             <img
               className=' h-60 w-full object-cover'
-              src={show.movie.poster_path}
+              src={`https://image.tmdb.org/t/p/original${show.movieId.poster_path}`}
               alt='poster'
             />
 
             {/* Title */}
-            <p className=' font-medium p-2 truncate'>{show.movie.title}</p>
+            <p className=' font-medium p-2 truncate'>{show.movieId.title}</p>
 
             {/* Price and rating */}
             <div className=' flex items-center justify-between px-2'>
@@ -99,7 +108,7 @@ const Dashboard = () => {
               </p>
               <p className=' flex items-center gap-1 text-sm text-gray-400 mt-1 pr-1'>
                 <StarIcon className=' w-4 h-4 text-primary fill-primary' />
-                {show.movie.vote_average.toFixed(1)}
+                {show.movieId.vote_average.toFixed(1)}
               </p>
             </div>
 

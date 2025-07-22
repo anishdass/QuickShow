@@ -5,9 +5,6 @@ import User from "../models/User.js";
 
 // Shows Calls
 // Add Shows
-
-
-
 export const addNewShows = async (showsData) => {
   await Shows.insertMany(showsData);
 };
@@ -47,8 +44,7 @@ export const findMovie = async (movieId) => {
 
 // Create Movie
 export const addNewMovie = async (movieData) => {
-  let movie = await Movie.create(movieData);
-  return movie;
+  await Movie.create(movieData);
 };
 
 // Booking calls
