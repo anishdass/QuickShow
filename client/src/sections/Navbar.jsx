@@ -7,7 +7,7 @@ import { AppContext } from "../context/AppContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useUser();
+  const { user } = useContext(AppContext);
   const { openSignIn } = useClerk();
   const navigate = useNavigate();
   const { isAdmin } = useContext(AppContext);
@@ -18,7 +18,6 @@ const Navbar = () => {
         <img src={assets.logo} alt='logo' className=' w-36 h-auto' />
       </Link>
 
-      {/* For menu items */}
       <div
         className={`max-md:absolute max-md:top-0 max-md:left-0 max-md:font-medium max-md:text-lg z-50 flex flex-col md:flex-row items-center max-md:justify-center gap-8 min-md:px-8 py-3 max-md:h-screen min-md:rounded-full backdrop-blur bg-black/70 md:bg-white/10 md:border border-gray-300/20 overflow-hidden transition-[width] duration-300 ${
           isOpen ? " max-md:w-full" : " max-md:w-0"
@@ -60,17 +59,19 @@ const Navbar = () => {
           to={"/"}>
           Releases
         </Link>
-        <Link
-          onClick={() => {
-            scrollTo(0, 0);
-            setIsOpen(false);
-          }}
-          to={"/favorite"}>
-          Favorite
-        </Link>
+
+        {user?.favorites?.length > 0 && (
+          <Link
+            onClick={() => {
+              scrollTo(0, 0);
+              setIsOpen(false);
+            }}
+            to={"/favorite"}>
+            Favorite
+          </Link>
+        )}
       </div>
 
-      {/* For search icon and user login */}
       <div className='flex items-center gap-8'>
         <SearchIcon className=' max-md:hidden w-6 h-6 cursor-pointer' />
         {!user ? (
@@ -101,7 +102,6 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Menu icon for smaller screens */}
       <MenuIcon
         onClick={() => setIsOpen(!isOpen)}
         className='max-md:ml-4 md:hidden w-8 h-8 cursor-pointer'
