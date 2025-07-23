@@ -1,50 +1,40 @@
-import { Clock, Heart, StarIcon } from "lucide-react";
-import React, { useState } from "react";
+import { Heart, StarIcon } from "lucide-react";
+import React, { useEffect, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { timeFormat } from "../lib/utils";
-import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
+import { getUserData } from "../../../server/controller/userController";
 
 const MovieCard = ({ movie }) => {
-  const [favorite, setFavorite] = useState("");
-  const [watchlist, setWatchlist] = useState("");
+  const { user, axios, getUserData } = useContext(AppContext);
+  const [favoriteIds, setFavoriteIds] = useState([]);
   const navigate = useNavigate();
-  const { axios, user } = useContext(AppContext);
 
-  const toggleFavorite = async (movie) => {
-    if (favorite === "") {
-      setFavorite(movie._id);
-      const { data } = await axios.post("/api/user/add-favorites", {
-        movieId: movie._id,
-        userId: user._id,
-      });
-      toast.success(data.message);
-    } else {
-      setFavorite("");
-      const { data } = await axios.post("/api/user/remove-favorites", {
-        movieId: movie._id,
-        userId: user._id,
-      });
-      toast.error(data.message);
+  useEffect(() => {
+    if (user) {
+      setFavoriteIds(user.favorites.map((favorite) => favorite._id));
     }
-  };
+  }, [user]);
 
-  const toggleWatchlist = async (movie) => {
-    if (watchlist === "") {
-      setWatchlist(movie._id);
-      const { data } = await axios.post("/api/user/add-watchlist", {
-        movieId: movie._id,
-        userId: user._id,
-      });
-      toast.success(data.message);
-    } else {
-      setWatchlist("");
-      const { data } = await axios.post("/api/user/remove-watchlist", {
-        movieId: movie._id,
-        userId: user._id,
-      });
-      toast.error(data.message);
+  const toggleFavorite = async (movieId) => {
+    try {
+      if (favoriteIds?.includes(movieId)) {
+        setFavoriteIds(favoriteIds.filter((id) => id !== movieId));
+        await axios.post("/api/user/remove-favorites", {
+          movieId,
+        });
+        toast.error("Removed from favorites");
+      } else {
+        setFavoriteIds([...favoriteIds, movieId]);
+        await axios.post("/api/user/add-favorites", {
+          movieId,
+        });
+        toast.success("Favorites Updated");
+      }
+      await getUserData();
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -57,44 +47,21 @@ const MovieCard = ({ movie }) => {
             scrollTo(0, 0);
           }}
           src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-          alt=''
+          alt={movie.title}
           className='rounded-lg h-52 w-full object-cover object-right-bottom cursor-pointer'
         />
 
-        <div className='absolute top-2 left-2 right-2 z-10 flex justify-between items-center px-2'>
-          {/* Watchlist Icon (Clock) */}
-          <div
-            className={`bg-white/10 backdrop-blur-sm p-1.5 rounded-full cursor-pointer
-          ${
-            watchlist === movie._id
-              ? "hover:bg-yellow-500/20"
-              : "hover:bg-white/20"
-          }`}
-            onClick={() => toggleWatchlist(movie)}>
-            <Clock
-              className={`w-5 h-5 transition 
-        ${
-          watchlist === movie._id
-            ? " text-white fill-orange-500"
-            : "text-white hover:text-orange-400"
-        }`}
-            />
-          </div>
-
+        <div className='absolute top-2 right-2  z-10 flex justify-between items-center px-2'>
           {/* Favorite Icon (Heart) */}
           <div
-            className={`bg-white/10 backdrop-blur-sm p-1.5 rounded-full cursor-pointer
-          ${
-            favorite === movie._id ? "hover:bg-red-500/20" : "hover:bg-white/20"
-          }`}
-            onClick={() => toggleFavorite(movie)}>
+            className='bg-white/10 backdrop-blur-sm p-1.5 rounded-full cursor-pointer'
+            onClick={() => toggleFavorite(movie._id)}>
             <Heart
-              className={`w-5 h-5 transition 
-        ${
-          favorite === movie._id
-            ? "fill-red-500 text-red-500"
-            : "text-white hover:text-red-400"
-        }`}
+              className={`w-5 h-5 transition ${
+                favoriteIds.includes(movie._id)
+                  ? "fill-red-500 text-red-500"
+                  : "text-white hover:text-red-400"
+              } `}
             />
           </div>
         </div>

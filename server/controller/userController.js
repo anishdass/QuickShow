@@ -1,4 +1,8 @@
-import { findUser, getUserBookings } from "../utils/utilsDB.js";
+import {
+  findUser,
+  getUserBookings,
+  findUserForFavorites,
+} from "../utils/utilsDB.js";
 
 import User from "../models/User.js";
 
@@ -20,7 +24,7 @@ export const getUserData = async (req, res) => {
   try {
     const { userId } = req.body;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate("favorites");
     return res.json({ success: true, data: user });
   } catch (error) {
     console.log(error.message);
@@ -31,16 +35,14 @@ export const getUserData = async (req, res) => {
 // API to add to favorite movies
 export const addUserFavorites = async (req, res) => {
   try {
-    const { movieId, userId } = req.body;
-    console.log(movieId);
-    console.log(userId);
+    const { movieId } = req.body;
+    const userId = req.auth().userId;
     const user = await findUser(userId);
     let favorites = user.favorites;
     if (favorites.includes(movieId)) {
       return res.json({ success: true, message: "Already Added" });
     } else {
       favorites.push(movieId);
-      console.log(favorites);
       const userData = { favorites: favorites };
       await User.findByIdAndUpdate(userId, userData);
       return res.json({ success: true, message: "Favorite Added" });
@@ -57,7 +59,8 @@ export const addUserFavorites = async (req, res) => {
 // API to delete from favorite movies
 export const deleteUserFavorites = async (req, res) => {
   try {
-    const { movieId, userId } = req.body;
+    const { movieId } = req.body;
+    const userId = req.auth().userId;
     const user = await findUser(userId);
     let favorites = user.favorites;
     if (favorites.includes(movieId)) {
@@ -79,9 +82,8 @@ export const deleteUserFavorites = async (req, res) => {
 // API to get favorite movies
 export const getUserFavorites = async (req, res) => {
   try {
-    // const userId = req.auth().userId();
-    const userId = process.env.TEST_USER;
-    const user = await findUser(userId);
+    const userId = req.auth().userId;
+    const user = await findUserForFavorites(userId);
     const favorites = user.favorites;
     return res.json({ success: true, data: favorites });
   } catch (error) {

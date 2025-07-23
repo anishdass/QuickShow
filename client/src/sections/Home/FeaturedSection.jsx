@@ -8,7 +8,6 @@ import { AppContext } from "../../context/AppContext";
 const FeaturedSection = () => {
   const navigate = useNavigate();
   const { upcomingShows } = useContext(AppContext);
-  console.log(upcomingShows);
 
   return (
     <div className=' px-6 md:px-16 lg:px-24 xl:px-44 overflow-hidden'>

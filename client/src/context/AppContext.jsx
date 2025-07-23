@@ -25,6 +25,7 @@ export const AppContextProvider = ({ children }) => {
       const { data } = await axios.post("/api/user/get-user", {
         userId: clerkUser?.id,
       });
+
       data.success ? setUser(data.data) : toast.error(data.message);
     } catch (error) {
       toast.message("Something went wrong..");
@@ -67,7 +68,14 @@ export const AppContextProvider = ({ children }) => {
     getShows();
   }, [clerkUser]);
 
-  const value = { axios, isAdmin, user, upcomingShows, checkIsAdmin };
+  const value = {
+    axios,
+    isAdmin,
+    user,
+    getUserData,
+    upcomingShows,
+    checkIsAdmin,
+  };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

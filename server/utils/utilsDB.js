@@ -93,3 +93,7 @@ export const findUser = async (userId) => {
   let user = await User.findById(userId);
   return user;
 };
+export const findUserForFavorites = async (userId) => {
+  let user = await User.findById(userId).populate("favorites");
+  return user;
+};
