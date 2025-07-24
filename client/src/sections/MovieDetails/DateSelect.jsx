@@ -12,7 +12,7 @@ const DateSelect = ({ dateTime, id }) => {
     if (!selected) {
       return toast("Select a date");
     }
-    navigate(`/movies/${id}/${selected.replaceAll("-", "")}`);
+    navigate(`/show/${id}/${selected.replaceAll("-", "")}`);
     scrollTo(0, 0);
   };
 

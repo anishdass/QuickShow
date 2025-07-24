@@ -31,6 +31,8 @@ const HeroSection = () => {
       {/* Overlay with blur & dark tint */}
       <div className='absolute inset-0 bg-black/70' />
 
+      <div className='absolute bottom-0 left-0 right-0 h-70 bg-gradient-to-t from-black to-transparent z-10' />
+
       {/* Content */}
       <div className='relative z-10 flex flex-col items-start justify-center h-full px-6 md:px-16 lg:px-36 gap-4'>
         <h1 className='text-5xl md:text-[70px] md:leading-18 font-semibold max-w-110 text-white'>

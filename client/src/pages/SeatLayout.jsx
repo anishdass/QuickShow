@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { assets, dummyDateTimeData, dummyShowsData } from "../assets/assets";
 import Loading from "../components/Loading";
@@ -6,9 +6,11 @@ import { dateFormat, isoTimeFormat } from "../lib/utils";
 import { ArrowRightIcon, ClockIcon } from "lucide-react";
 import BlurCircle from "../components/BlurCircle";
 import { toast } from "react-hot-toast";
+import { AppContext } from "../context/AppContext";
 
 const SeatLayout = () => {
   const { id, dateString } = useParams();
+  const { axios } = useContext(AppContext);
   const groupRows = [
     ["A", "B"],
     ["C", "D"],
@@ -23,6 +25,9 @@ const SeatLayout = () => {
   const [selectedTime, setSelectedTime] = useState("");
   const [show, setShow] = useState(null);
 
+  const { upcomingShows } = useContext(AppContext);
+  console.log(upcomingShows);
+
   const navigate = useNavigate();
 
   const toggleSelectedTime = (time) => {
@@ -33,12 +38,14 @@ const SeatLayout = () => {
     }
   };
 
-  const getShow = () => {
-    const movie = dummyShowsData.find((movie) => movie._id === id);
-    if (movie) {
+  const getShow = async () => {
+    const data = await axios.get(`/api/show/${id}`);
+    const movie = data.data.data;
+    const dateTime = data.data.dateTime;
+    if (data) {
       setShow({
         movie,
-        dateTime: dummyDateTimeData,
+        dateTime,
       });
     }
   };

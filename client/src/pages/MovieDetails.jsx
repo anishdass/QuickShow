@@ -17,8 +17,6 @@ const MovieDetails = () => {
     window.open(url);
   };
 
-  console.log(upcomingShows);
-
   const getShow = async () => {
     try {
       const { data } = await axios.get(`/api/show/${id}`);
