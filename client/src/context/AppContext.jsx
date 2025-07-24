@@ -20,6 +20,7 @@ export const AppContextProvider = ({ children }) => {
   const [upcomingShows, setUpcomingShows] = useState([]);
   const [user, setUser] = useState(null);
   const [favoriteIds, setFavoriteIds] = useState([]);
+  const tmdb_img_url = "https://image.tmdb.org/t/p/original";
 
   const getUserData = async () => {
     try {
@@ -102,6 +103,7 @@ export const AppContextProvider = ({ children }) => {
     checkIsAdmin,
     toggleFavorite,
     favoriteIds,
+    tmdb_img_url,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

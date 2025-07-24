@@ -6,7 +6,6 @@ import { Heart, StarIcon, PlayCircle } from "lucide-react";
 
 const MovieDetailsSection = ({ show, onShowTrailer }) => {
   const { toggleFavorite, favoriteIds } = useContext(AppContext);
-  console.log(show.movie._id);
 
   return (
     <div className=' flex flex-col md:flex-row gap-8 max-w-6xl mx-auto'>
@@ -65,7 +64,7 @@ const MovieDetailsSection = ({ show, onShowTrailer }) => {
         {/* Action Buttons */}
         <div className=' flex flex-wrap items-center gap-4 mt-4'>
           <button
-            onClick={() => onShowTrailer(show.movie)}
+            onClick={() => onShowTrailer(show.movie.videoUrl)}
             className=' flex items-center gap-2 px-7 py-3 text-sm bg-gray-800 hover:bg-gray-900 transition rounded-md font-medium cursor-pointer active:scale-95'>
             <PlayCircle className=' w-5 h-5' />
             Watch Trailer

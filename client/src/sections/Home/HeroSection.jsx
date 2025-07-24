@@ -1,50 +1,63 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { assets } from "../../assets/assets";
 import { ArrowRight, Calendar1Icon, ClockIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../../context/AppContext";
+import { timeFormat } from "../../lib/utils";
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const { upcomingShows, tmdb_img_url } = useContext(AppContext);
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) =>
+        upcomingShows.length ? (prev + 1) % upcomingShows.length : 0
+      );
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [upcomingShows]);
+
+  if (!upcomingShows.length) return null;
+
+  const show = upcomingShows[index];
+  const backgroundUrl = `${tmdb_img_url}${show.backdrop_path}`;
+
   return (
-    <div className='flex flex-col items-start justify-center gap-4 px-6 md:px-16 lg:px-36 bg-[url("/backgroundImage.png")] bg-cover bg-center h-screen'>
-      {/* Movie poster on the home page */}
-      <img
-        src={assets.marvelLogo}
-        alt='logo'
-        className=' max-h-11 lg:h-11 mt-20'
-      />
+    <div
+      className='relative h-screen bg-cover bg-center transition-all duration-1000'
+      style={{ backgroundImage: `url(${backgroundUrl})` }}>
+      {/* Overlay with blur & dark tint */}
+      <div className='absolute inset-0 bg-black/70' />
 
-      {/* Movie name  */}
-      <h1 className=' text-5xl md:text-[70px] md:leading-18 font-semibold max-w-110'>
-        Guardians <br />
-        Of the Galaxy
-      </h1>
+      {/* Content */}
+      <div className='relative z-10 flex flex-col items-start justify-center h-full px-6 md:px-16 lg:px-36 gap-4'>
+        <h1 className='text-5xl md:text-[70px] md:leading-18 font-semibold max-w-110 text-white'>
+          {show.title}
+        </h1>
 
-      {/* Genres, Year of release, runtime */}
-      <div className=' flex items-center gap-4 text-gray-300'>
-        <span>Action | Adventure | Sci-Fi </span>
-        <div className=' flex items-center gap-1'>
-          <Calendar1Icon className=' w-4.5 h-4.5' /> 2018
+        <div className='flex items-center gap-4 text-gray-300'>
+          <span>{show.genres?.map((g) => g.name).join(" | ")}</span>
+          <div className='flex items-center gap-1'>
+            <Calendar1Icon className='w-4.5 h-4.5' />
+            {show.release_date?.split("-")[0]}
+          </div>
+          <div className='flex items-center gap-1'>
+            <ClockIcon className='w-4.5 h-4.5' />
+            {timeFormat(show.runtime)}
+          </div>
         </div>
-        <div className=' flex items-center gap-1'>
-          <ClockIcon className=' w-4.5 h-4.5' /> 2h 8m
-        </div>
+
+        <p className='max-w-md text-gray-300 line-clamp-4'>{show.overview}</p>
+
+        <button
+          className='flex items-center gap-1 px-6 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer'
+          onClick={() => navigate("/movies")}>
+          Explore Movies
+          <ArrowRight className='w-5 h-5' />
+        </button>
       </div>
-
-      {/* Synopsis */}
-      <p className=' max-w-md text-gray-300'>
-        Light years from Earth, 26 years after being abducted, Peter Quill finds
-        himself the prime target of a manhunt after discovering an orb wanted by
-        Ronan the Accuser.
-      </p>
-
-      {/* Explore Button */}
-      <button
-        className=' flex items-center gap-1 px-6 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer'
-        onClick={() => navigate("/movies")}>
-        Explore Movies
-        <ArrowRight className=' w-5 h-5' />
-      </button>
     </div>
   );
 };

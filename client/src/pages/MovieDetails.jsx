@@ -13,8 +13,8 @@ const MovieDetails = () => {
   const { id } = useParams();
   const { axios, upcomingShows } = useContext(AppContext);
 
-  const onShowTrailer = () => {
-    window.open(dummyTrailers[0].videoUrl);
+  const onShowTrailer = (url) => {
+    window.open(url);
   };
 
   console.log(upcomingShows);
