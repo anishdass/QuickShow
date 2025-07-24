@@ -6,5 +6,5 @@ import {
 
 export const bookingRouter = express.Router();
 
-bookingRouter.get("/create-booking", createBooking);
+bookingRouter.post("/create-booking", createBooking);
 bookingRouter.get("/seats/:showId", getOccupiedSeats);

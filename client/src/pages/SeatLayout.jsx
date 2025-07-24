@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { assets, dummyDateTimeData, dummyShowsData } from "../assets/assets";
+import { assets } from "../assets/assets";
 import Loading from "../components/Loading";
 import { dateFormat, isoTimeFormat } from "../lib/utils";
 import { ArrowRightIcon, ClockIcon } from "lucide-react";
@@ -24,11 +24,10 @@ const SeatLayout = () => {
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [selectedTime, setSelectedTime] = useState("");
   const [show, setShow] = useState(null);
+  const [showId, setShowId] = useState("");
+  const [occupiedSeats, setOccupiedSeats] = useState([]);
 
-  const { upcomingShows } = useContext(AppContext);
-  console.log(upcomingShows);
-
-  const navigate = useNavigate();
+  const selectedDate = selectedTime.split("T")[0];
 
   const toggleSelectedTime = (time) => {
     if (selectedTime === time) {
@@ -57,6 +56,10 @@ const SeatLayout = () => {
       return toast("You can only select 5 seats");
     }
 
+    if (occupiedSeats.includes(seatId)) {
+      return toast("This seat is already booked");
+    }
+
     setSelectedSeats((prev) =>
       prev.includes(seatId)
         ? prev.filter((seat) => seat !== seatId)
@@ -72,9 +75,11 @@ const SeatLayout = () => {
           return (
             <button
               key={seatId}
-              onClick={() => handleSeatClick(seatId)} // ✅ Fix: wrap in arrow function
+              onClick={() => handleSeatClick(seatId)}
               className={`h-8 w-8 rounded border border-primary/60 cursor-pointer ${
                 selectedSeats.includes(seatId) ? "bg-primary text-white" : ""
+              } ${
+                occupiedSeats.includes(seatId) ? "bg-gray-600 text-white" : ""
               }`}>
               {seatId}
             </button>
@@ -84,9 +89,38 @@ const SeatLayout = () => {
     </div>
   );
 
+  const reserveSeats = async () => {
+    try {
+      const payload = { selectedSeats, showId };
+      await axios.post("/api/booking/create-booking", payload);
+    } catch (error) {
+      console.log(error.message);
+      toast.error("Unable to reserve seats");
+    }
+  };
+
+  const getBookedSeats = async () => {
+    if (showId) {
+      try {
+        const { data } = await axios.get(`/api/booking/seats/${showId}`);
+        setOccupiedSeats(data.data);
+      } catch (error) {
+        console.log(error.message);
+        toast.error("Unable to fetch booked seats");
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (show && selectedDate && show.dateTime[selectedDate]) {
+      setShowId(show.dateTime[selectedDate][0].showId);
+    }
+  }, [selectedDate, show]);
+
   useEffect(() => {
     getShow();
-  }, [id]);
+    getBookedSeats();
+  }, [id, showId]);
 
   return show ? (
     <div className=' flex flex-col md:flex-row px-6 md:px-16 lg:px-40 py-30 md:pt-50'>
@@ -96,7 +130,6 @@ const SeatLayout = () => {
         <div className=' mt-5 space-y-1'>
           {show.dateTime[date].map((data) => (
             <div
-              // onClick={() => setSelectedTime(data.time)}
               onClick={() => toggleSelectedTime(data.time)}
               className={`flex items-center gap-2 px-6 py-2 w-max rounded-r-md cursor-pointer transition ${
                 selectedTime === data.time
@@ -129,7 +162,10 @@ const SeatLayout = () => {
           </div>
         </div>
         <button
-          onClick={() => navigate("/my-bookings")}
+          onClick={() => {
+            reserveSeats();
+            // navigate("/my-bookings");
+          }}
           className=' flex items-center gap-1 mt-20 px-10 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer active:scale-95'>
           Proceed to checkout
           <ArrowRightIcon strokeWidth={3} className=' w-4 h-4' />

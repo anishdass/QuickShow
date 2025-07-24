@@ -42,8 +42,6 @@ export const findMovie = async (movieId) => {
   return movie;
 };
 
-
-
 // Create Movie
 export const addNewMovie = async (movieData) => {
   await Movie.create(movieData);
@@ -51,14 +49,18 @@ export const addNewMovie = async (movieData) => {
 
 // Booking calls
 // create booking
-export const bookTickets = (currentShow, selectedSeats, userId, showId) => {
-  const booking = Booking.create({
+export const bookTickets = async (
+  currentShow,
+  selectedSeats,
+  userId,
+  showId
+) => {
+  await Booking.create({
     user: userId,
     show: showId,
     amount: currentShow.showPrice * selectedSeats.length,
     bookedSeat: selectedSeats,
   });
-  return booking;
 };
 
 // get booking
@@ -95,6 +97,7 @@ export const findUser = async (userId) => {
   let user = await User.findById(userId);
   return user;
 };
+
 export const findUserForFavorites = async (userId) => {
   let user = await User.findById(userId).populate("favorites");
   return user;

@@ -62,7 +62,8 @@ export const checkAvailabilityOfSelectedSeats = async (
     const occupiedSeats = currentShow.occupiedSeats;
 
     const isAnySeatOccupied = selectedSeats.some((seat) => occupiedSeats[seat]);
-    return isAnySeatOccupied;
+
+    return !isAnySeatOccupied;
   } catch (error) {
     console.log(error.message);
     return res.json({

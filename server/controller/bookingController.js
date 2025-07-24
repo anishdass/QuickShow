@@ -4,19 +4,19 @@ import { checkAvailabilityOfSelectedSeats } from "../utils/utils.js";
 // Function to create booking
 export const createBooking = async (req, res) => {
   try {
-    // const { userId } = req.auth();
-    const userId = 1234;
+    const userId = req.auth().userId;
     const { selectedSeats, showId } = req.body;
 
-    const isAvailable = !(await checkAvailabilityOfSelectedSeats(
+    const isAvailable = await checkAvailabilityOfSelectedSeats(
       selectedSeats,
       showId
-    ));
+    );
+
     if (!isAvailable) {
       return res.json({ success: false, message: "Seats unavailable" });
     }
     const currentShow = await getCurrentShow(showId);
-    const booking = bookTickets(currentShow, selectedSeats, userId, showId);
+    const { data } = bookTickets(currentShow, selectedSeats, userId, showId);
     selectedSeats.map((seat) => {
       currentShow.occupiedSeats[seat] = userId;
     });
