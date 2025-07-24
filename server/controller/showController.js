@@ -6,10 +6,15 @@ import {
   getShows,
   getUpcomingShows,
 } from "../utils/utilsDB.js";
-import { getCastDetails, getMovieDetails } from "../utils/utilsAPI.js";
+import {
+  getCastDetails,
+  getMovieDetails,
+  findTrailerURL,
+} from "../utils/utilsAPI.js";
 import axios from "axios";
 
 const Authorization = `Bearer ${process.env.TMDB_API_KEY}`;
+const youtube_api_key = process.env.YOUTUBE_API_KEY;
 
 // Now Playing movies
 export const getNowPlayingMovies = async (req, res) => {
@@ -39,7 +44,17 @@ export const addShows = async (req, res) => {
     if (!movie) {
       const movieDetails = await getMovieDetails(movieId);
       const movieCast = await getCastDetails(movieId);
-      movie = getMovieData(movieDetails, movieCast);
+
+      console.log(movieDetails.data);
+
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${
+        movieDetails.data.title
+      }%${
+        movieDetails.data.release_date.split("-")[0]
+      }%20official%20trailer&type=video&maxResults=1&key=${youtube_api_key}`;
+
+      let trailerData = await findTrailerURL(url);
+      movie = getMovieData(movieDetails, movieCast, trailerData);
       addNewMovie(movie);
     }
 

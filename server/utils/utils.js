@@ -1,6 +1,15 @@
 import { getCurrentShow } from "./utilsDB.js";
 
-export const getMovieData = (movieDetails, movieCast) => {
+export const getMovieData = (movieDetails, movieCast, trailerData) => {
+  const videoUrl =
+    process.env.YOUTUBE_TRAILER_PREFIX + trailerData.data.items[0].id.videoId;
+  const thumbnail =
+    trailerData.data.items[0].snippet.thumbnails.default.url.replace(
+      "/default",
+      "/maxresdefault",
+      -1
+    );
+
   const movieData = {
     _id: movieDetails.data.id,
     title: movieDetails.data.original_title,
@@ -15,6 +24,8 @@ export const getMovieData = (movieDetails, movieCast) => {
     vote_average: movieDetails.data.vote_average,
     runtime: movieDetails.data.runtime,
     adult: movieDetails.data.adult,
+    videoUrl: videoUrl,
+    thumbnail: thumbnail,
   };
   return movieData;
 };

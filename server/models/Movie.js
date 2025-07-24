@@ -15,6 +15,8 @@ const movieSchema = mongoose.Schema(
     vote_average: { type: Number, required: true },
     runtime: { type: Number, required: true },
     adult: { type: Boolean },
+    videoUrl: { type: String },
+    thumbnail: { type: String },
   },
   { timestamps: true }
 );

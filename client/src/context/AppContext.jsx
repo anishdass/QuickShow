@@ -18,7 +18,8 @@ export const AppContextProvider = ({ children }) => {
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [upcomingShows, setUpcomingShows] = useState([]);
-  const [user, setUser] = useState(false);
+  const [user, setUser] = useState(null);
+  const [favoriteIds, setFavoriteIds] = useState([]);
 
   const getUserData = async () => {
     try {
@@ -62,10 +63,34 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
+  const toggleFavorite = async (movieId) => {
+    try {
+      if (favoriteIds?.includes(movieId)) {
+        setFavoriteIds(favoriteIds.filter((id) => id !== movieId));
+        await axios.post("/api/user/remove-favorites", {
+          movieId,
+        });
+        toast.error("Removed from favorites");
+      } else {
+        setFavoriteIds([...favoriteIds, movieId]);
+        await axios.post("/api/user/add-favorites", {
+          movieId,
+        });
+        toast.success("Favorites Updated");
+      }
+      await getUserData();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getUserData();
     checkIsAdmin();
     getShows();
+    if (user) {
+      setFavoriteIds(user.favorites.map((favorite) => favorite._id));
+    }
   }, [clerkUser]);
 
   const value = {
@@ -75,6 +100,8 @@ export const AppContextProvider = ({ children }) => {
     getUserData,
     upcomingShows,
     checkIsAdmin,
+    toggleFavorite,
+    favoriteIds,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -9,7 +9,7 @@ const CastSection = ({ show }) => {
             key={cast.id}
             className=' flex flex-col items-center text-center'>
             <img
-              src={cast.profile_path}
+              src={`https://image.tmdb.org/t/p/original${cast.profile_path}`}
               alt='cast-profile-picture'
               className='rounded-full h-20 aspect-square object-cover'
             />

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./sections/Navbar";
 import Footer from "./sections/Footer";
@@ -16,11 +16,26 @@ import ListBookings from "./pages/admin/ListBookings";
 import ListShows from "./pages/admin/ListShows";
 import { AppContext } from "./context/AppContext";
 import { SignIn } from "@clerk/clerk-react";
-import { RequireAdmin } from "./lib/RequireAdmin";
+import Loading from "./components/Loading";
 
 const App = () => {
   const isAdminPath = useLocation().pathname.startsWith("/admin");
   const { user } = useContext(AppContext);
+
+  const [loading, setLoading] = useState(true); // <--- 1. Loading state
+
+  useEffect(() => {
+    // 2-second delay
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timeout); // cleanup
+  }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -29,8 +44,8 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/movies' element={<Movies />} />
-        <Route path='/movies/:id' element={<MovieDetails />} />
-        <Route path='/movies/:id/:dateString' element={<SeatLayout />} />
+        <Route path='/show/:id' element={<MovieDetails />} />
+        <Route path='/show/:id/:dateString' element={<SeatLayout />} />
         <Route path='/my-bookings' element={<MyBookings />} />
         <Route path='/favorite' element={<Favorite />} />
         <Route
@@ -39,8 +54,8 @@ const App = () => {
             user ? (
               <Layout />
             ) : (
-              <div className=' min-h-screen flex justify-center items-center'>
-                <SignIn fallbackRedirectUrl={"/admin"}></SignIn>
+              <div className='min-h-screen flex justify-center items-center'>
+                <SignIn fallbackRedirectUrl={"/admin"} />
               </div>
             )
           }>

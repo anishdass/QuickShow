@@ -5,13 +5,14 @@ import BlurCircle from "../../components/BlurCircle";
 import { Heart, StarIcon, PlayCircle } from "lucide-react";
 
 const MovieDetailsSection = ({ show, onShowTrailer }) => {
-  const { toggleFavorite, isFavorited } = useContext(AppContext);
+  const { toggleFavorite, favoriteIds } = useContext(AppContext);
+  console.log(show.movie._id);
 
   return (
     <div className=' flex flex-col md:flex-row gap-8 max-w-6xl mx-auto'>
       {/* Movie Poster */}
       <img
-        src={show.movie.poster_path}
+        src={`https://image.tmdb.org/t/p/original${show.movie.poster_path}`}
         alt='movie-poster'
         className=' max-md:mx-auto rounded-xl h-104 max-w-70 object-cover'
       />
@@ -30,12 +31,14 @@ const MovieDetailsSection = ({ show, onShowTrailer }) => {
           </h1>
           <div
             className='cursor-pointer transition-transform hover:scale-110'
-            onClick={() => toggleFavorite(show.movie)}>
-            {isFavorited(show.movie) ? (
-              <Heart className='w-7 h-7 text-primary fill-current' />
-            ) : (
-              <Heart className='w-7 h-7 text-white' />
-            )}
+            onClick={() => toggleFavorite(show.movie._id)}>
+            <Heart
+              className={`transition ${
+                favoriteIds.includes(show.movie._id)
+                  ? "fill-red-500 text-red-500"
+                  : "text-white hover:text-red-400"
+              } `}
+            />
           </div>
         </div>
 

@@ -1,58 +1,27 @@
 import { Heart, StarIcon } from "lucide-react";
-import React, { useEffect, useContext, useState } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { timeFormat } from "../lib/utils";
 import { AppContext } from "../context/AppContext";
-import toast from "react-hot-toast";
-import { getUserData } from "../../../server/controller/userController";
 
 const MovieCard = ({ movie }) => {
-  const { user, axios, getUserData } = useContext(AppContext);
-  const [favoriteIds, setFavoriteIds] = useState([]);
+  const { favoriteIds, toggleFavorite } = useContext(AppContext);
+
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user) {
-      setFavoriteIds(user.favorites.map((favorite) => favorite._id));
-    }
-  }, [user]);
-
-  const toggleFavorite = async (movieId) => {
-    try {
-      if (favoriteIds?.includes(movieId)) {
-        setFavoriteIds(favoriteIds.filter((id) => id !== movieId));
-        await axios.post("/api/user/remove-favorites", {
-          movieId,
-        });
-        toast.error("Removed from favorites");
-      } else {
-        setFavoriteIds([...favoriteIds, movieId]);
-        await axios.post("/api/user/add-favorites", {
-          movieId,
-        });
-        toast.success("Favorites Updated");
-      }
-      await getUserData();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <div className='flex flex-col justify-between p-3 bg-gray-800 rounded-2xl hover:-translate-y-1 transition duration-300 w-66'>
       <div className='relative'>
         <img
           onClick={() => {
-            navigate(`/movies/${movie._id}`);
+            navigate(`/show/${movie._id}`);
             scrollTo(0, 0);
           }}
-          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+          src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
           alt={movie.title}
-          className='rounded-lg h-52 w-full object-cover object-right-bottom cursor-pointer'
+          className='rounded-lg  w-full object-cover object-right-bottom cursor-pointer'
         />
 
         <div className='absolute top-2 right-2  z-10 flex justify-between items-center px-2'>
-          {/* Favorite Icon (Heart) */}
           <div
             className='bg-white/10 backdrop-blur-sm p-1.5 rounded-full cursor-pointer'
             onClick={() => toggleFavorite(movie._id)}>

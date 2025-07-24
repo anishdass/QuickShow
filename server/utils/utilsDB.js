@@ -42,6 +42,8 @@ export const findMovie = async (movieId) => {
   return movie;
 };
 
+
+
 // Create Movie
 export const addNewMovie = async (movieData) => {
   await Movie.create(movieData);

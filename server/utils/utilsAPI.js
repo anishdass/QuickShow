@@ -13,6 +13,11 @@ export const getNowPlayingMovies = async () => {
   return response;
 };
 
+export const findTrailerURL = async (data) => {
+  const url = await axios.get(data);
+  return url;
+};
+
 // get movie details
 export const getMovieDetails = async (movieId) => {
   const movieDetails = await axios.get(
