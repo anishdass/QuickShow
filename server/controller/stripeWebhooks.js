@@ -5,6 +5,8 @@ export const stripeWebhooks = async (req, res) => {
   const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
   const sig = req.headers["stripe-signature"];
 
+  console.log("Entering StripeWebhooks");
+
   let event;
   try {
     event = stripeInstance.webhooks.constructEvent(
@@ -25,6 +27,7 @@ export const stripeWebhooks = async (req, res) => {
         });
         const session = sessionList.data[0];
         const { bookingId } = session.metadata;
+        console.log(bookingId);
         await Booking.findByIdAndUpdate(bookingId, {
           isPaid: true,
           paymentLink: "",
@@ -38,7 +41,7 @@ export const stripeWebhooks = async (req, res) => {
     }
     res.json({ received: true });
   } catch (error) {
-    console.error("Webhook processing error", err);
+    console.error("Webhook processing error", error);
     res.status(500).send("Internal Server Error");
   }
 };

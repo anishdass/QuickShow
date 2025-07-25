@@ -32,7 +32,11 @@ app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
 // Stripe
-app.use("/api/stripe", express.raw({ type: application.json }), stripeWebhooks);
+app.post(
+  "/api/stripe",
+  express.raw({ type: "application.json" }),
+  stripeWebhooks
+);
 
 // Routes
 app.get("/", (req, res) => res.send("Server is Live!"));
