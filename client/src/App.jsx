@@ -46,6 +46,7 @@ const App = () => {
         <Route path='/movies' element={<Movies />} />
         <Route path='/show/:id' element={<MovieDetails />} />
         <Route path='/show/:id/:dateString' element={<SeatLayout />} />
+        <Route path='/loading/:nextUrl' element={<Loading />} />
         <Route path='/my-bookings' element={<MyBookings />} />
         <Route path='/favorite' element={<Favorite />} />
         <Route

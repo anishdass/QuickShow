@@ -31,7 +31,7 @@ export const getUpcomingShows = async (movieId) => {
 
 // Get current show
 export const getCurrentShow = async (showId) => {
-  const currentShow = await Shows.findById(showId);
+  const currentShow = await Shows.findById(showId).populate("movieId");
   return currentShow;
 };
 
@@ -55,12 +55,13 @@ export const bookTickets = async (
   userId,
   showId
 ) => {
-  await Booking.create({
+  const booking = await Booking.create({
     user: userId,
     show: showId,
     amount: currentShow.showPrice * selectedSeats.length,
     bookedSeat: selectedSeats,
   });
+  return booking;
 };
 
 // get booking

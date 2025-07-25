@@ -94,7 +94,8 @@ const SeatLayout = () => {
   const reserveSeats = async () => {
     try {
       const payload = { selectedSeats, showId };
-      await axios.post("/api/booking/create-booking", payload);
+      const { data } = await axios.post("/api/booking/create-booking", payload);
+      window.location.href = data.url;
     } catch (error) {
       console.log(error.message);
       toast.error("Unable to reserve seats");
@@ -168,7 +169,6 @@ const SeatLayout = () => {
         <button
           onClick={() => {
             reserveSeats();
-            navigate("/my-bookings");
           }}
           className=' flex items-center gap-1 mt-20 px-10 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer active:scale-95'>
           Proceed to checkout
