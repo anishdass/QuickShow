@@ -34,7 +34,7 @@ app.use("/api/inngest", serve({ client: inngest, functions }));
 // Stripe
 app.post(
   "/api/stripe",
-  express.raw({ type: "application.json" }),
+  express.raw({ type: "application/json" }),
   stripeWebhooks
 );
 
