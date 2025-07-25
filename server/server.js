@@ -23,11 +23,6 @@ app.listen(port, () =>
 // Allowed origins
 const allowedOrigins = ["http://localhost:5173"];
 
-// Middlewares
-app.use(express.json());
-app.use(clerkMiddleware());
-app.use(cors({ origin: allowedOrigins, credentials: true }));
-
 // Inngest
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
@@ -37,6 +32,11 @@ app.post(
   express.raw({ type: "application/json" }),
   stripeWebhooks
 );
+
+// Middlewares
+app.use(express.json());
+app.use(clerkMiddleware());
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 
 // Routes
 app.get("/", (req, res) => res.send("Server is Live!"));
