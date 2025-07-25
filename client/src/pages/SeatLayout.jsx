@@ -29,6 +29,8 @@ const SeatLayout = () => {
 
   const selectedDate = selectedTime.split("T")[0];
 
+  const navigate = useNavigate();
+
   const toggleSelectedTime = (time) => {
     if (selectedTime === time) {
       setSelectedTime("");
@@ -138,7 +140,9 @@ const SeatLayout = () => {
               }`}
               key={data.showId}>
               <ClockIcon className=' w-4 h-4' />
-              <p className=' text-sm'>{isoTimeFormat(data.time)}</p>
+              <p className=' text-sm'>
+                {isoTimeFormat(data.time).split(",")[1]}
+              </p>
             </div>
           ))}
         </div>
@@ -164,7 +168,7 @@ const SeatLayout = () => {
         <button
           onClick={() => {
             reserveSeats();
-            // navigate("/my-bookings");
+            navigate("/my-bookings");
           }}
           className=' flex items-center gap-1 mt-20 px-10 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer active:scale-95'>
           Proceed to checkout

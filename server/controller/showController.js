@@ -45,8 +45,6 @@ export const addShows = async (req, res) => {
       const movieDetails = await getMovieDetails(movieId);
       const movieCast = await getCastDetails(movieId);
 
-      console.log(movieDetails.data);
-
       const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${
         movieDetails.data.title
       }%${

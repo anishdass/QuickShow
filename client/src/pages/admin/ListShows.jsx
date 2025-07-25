@@ -67,7 +67,7 @@ const ListShows = () => {
         </>
       ) : (
         <div className=' flex flex-col items-center justify-center h-screen'>
-          <h1 className=' text-3xl font-bold text-center'>No Bookings</h1>
+          <h1 className=' text-3xl font-bold text-center'>No Shows</h1>
         </div>
       )}
     </>

@@ -9,10 +9,10 @@ import User from "../models/User.js";
 // API to get user bookings
 export const getBookings = async (req, res) => {
   try {
-    // const userId = req.auth().userId();
-    const userId = process.env.TEST_USER;
+    const userId = req.auth().userId;
+    // const userId = process.env.TEST_USER;
     const bookings = await getUserBookings(userId);
-    return res.json({ success: true, data: bookings });
+    return res.json({ success: true, bookings });
   } catch (error) {
     console.log(error.message);
     return res.json({ success: false, message: "Unable to get user bookings" });
