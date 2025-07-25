@@ -1,6 +1,6 @@
 import cors from "cors";
 import "dotenv/config";
-import express from "express";
+import express, { application } from "express";
 import { connectDB } from "./config/db.js";
 import { clerkMiddleware } from "@clerk/express";
 import { serve } from "inngest/express";
@@ -9,6 +9,7 @@ import { showRouter } from "./routes/showRouter.js";
 import { bookingRouter } from "./routes/bookingRouter.js";
 import { adminRouter } from "./routes/adminRouter.js";
 import { userRouter } from "./routes/userRouter.js";
+import { stripeWebhooks } from "./controller/stripeWebhooks.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -27,14 +28,15 @@ app.use(express.json());
 app.use(clerkMiddleware());
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 
+// Inngest
+app.use("/api/inngest", serve({ client: inngest, functions }));
+
+// Stripe
+app.use("/api/stripe", express.raw({ type: application.json }), stripeWebhooks);
+
 // Routes
 app.get("/", (req, res) => res.send("Server is Live!"));
-app.use("/api/inngest", serve({ client: inngest, functions }));
-// Show
 app.use("/api/show", showRouter);
-// Booking
 app.use("/api/booking", bookingRouter);
-// Admin
 app.use("/api/admin", adminRouter);
-// User
 app.use("/api/user", userRouter);
