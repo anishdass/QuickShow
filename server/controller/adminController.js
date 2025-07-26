@@ -53,6 +53,7 @@ export const getAllUpcomingShows = async (req, res) => {
 export const getAllBookings = async (req, res) => {
   try {
     const bookings = await getBookings();
+    console.log(bookings);
     return res.json({ success: true, data: bookings });
   } catch (error) {
     console.log(error.message);

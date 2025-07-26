@@ -68,7 +68,10 @@ export const bookTickets = async (
 export const getBookings = async () => {
   const bookings = await Booking.find({})
     .populate("user")
-    .populate({ path: "show", populate: { path: "movieId" } })
+    .populate({
+      path: "show",
+      populate: { path: "movieId" },
+    })
     .sort({ createdAt: -1 });
   return bookings;
 };
