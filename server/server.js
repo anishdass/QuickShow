@@ -23,9 +23,6 @@ app.listen(port, () =>
 // Allowed origins
 const allowedOrigins = ["http://localhost:5173"];
 
-// Inngest
-app.use("/api/inngest", serve({ client: inngest, functions }));
-
 // Stripe
 app.post(
   "/api/stripe",
@@ -37,6 +34,9 @@ app.post(
 app.use(express.json());
 app.use(clerkMiddleware());
 app.use(cors({ origin: allowedOrigins, credentials: true }));
+
+// Inngest
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 // Routes
 app.get("/", (req, res) => res.send("Server is Live!"));
