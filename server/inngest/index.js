@@ -40,7 +40,7 @@ const syncUserDeletion = inngest.createFunction(
 // Function to update user from database
 const syncUserUpdation = inngest.createFunction(
   { id: "update-user-from-clerk" },
-  { event: "app/check-payment" },
+  { event: "app/user.updated" },
 
   async ({ event }) => {
     const { id, first_name, last_name, email_addresses, image_url } =
@@ -59,10 +59,10 @@ const syncUserUpdation = inngest.createFunction(
 // Function to update user from database
 const releaseSeatsAndDeleteBooking = inngest.createFunction(
   { id: "release-seats-delete-booking" },
-  { event: "app/checkpayment" },
+  { event: "app/check-payment" },
 
   async ({ event, step }) => {
-    const tenMinutesLater = new Date(Date.now() + 10 * 60 * 1000);
+    const tenMinutesLater = new Date(Date.now() + 1 * 60 * 1000);
     await step.sleepUntil("wait-for-10-minutes", tenMinutesLater);
 
     await step.run("check-payment-status", async () => {
