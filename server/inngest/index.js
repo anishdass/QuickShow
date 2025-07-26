@@ -76,14 +76,6 @@ const releaseSeatsAndDeleteBooking = inngest.createFunction(
         await Booking.findByIdAndDelete(booking._id);
       }
     });
-
-    const userData = {
-      _id: id,
-      email: email_addresses[0].email_address,
-      name: first_name + " " + last_name,
-      image: image_url,
-    };
-    await User.findByIdAndUpdate(id, userData);
   }
 );
 
