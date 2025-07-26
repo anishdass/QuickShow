@@ -64,6 +64,8 @@ const Dashboard = () => {
     fetchDashboardData();
   }, []);
 
+  console.log(dashboardData);
+
   return !loading ? (
     <>
       <Title text1={"Admin"} text2={"Dashboard"} />
@@ -91,7 +93,7 @@ const Dashboard = () => {
             key={show._id}>
             {/* Poster */}
             <img
-              className='  w-full object-cover'
+              className=' w-full object-cover'
               src={`https://image.tmdb.org/t/p/original${show.movieId.poster_path}`}
               alt='poster'
             />

@@ -5,8 +5,8 @@ const userSchema = mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   image: { type: String, required: true },
-  favorites: { type: Array, default: [], ref: "Movie" },
-  watchlist: { type: Array, default: [], ref: "Movie" },
+  favorites: { type: Array, unique: true, default: [], ref: "Movie" },
+  watchlist: { type: Array, unique: true, default: [], ref: "Movie" },
 });
 
 const User = mongoose.model("User", userSchema);

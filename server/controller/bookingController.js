@@ -1,6 +1,7 @@
 import { bookTickets, getCurrentShow } from "../utils/utilsDB.js";
 import { checkAvailabilityOfSelectedSeats } from "../utils/utils.js";
 import Stripe from "stripe";
+import { inngest } from "../inngest/index.js";
 
 // Function to create booking
 export const createBooking = async (req, res) => {
@@ -61,6 +62,12 @@ export const createBooking = async (req, res) => {
     // Add payment url to booking data
     booking.paymentLink = session.url;
     await booking.save();
+
+    // Trigger inngest to check if the payment is incomplete
+    await inngest.send({
+      name: "app/check-payment",
+      data: { bookingId: booking._id.toString() },
+    });
 
     res.json({ success: true, url: session.url });
   } catch (error) {

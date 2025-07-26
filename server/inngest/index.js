@@ -1,5 +1,7 @@
 import { Inngest } from "inngest";
 import User from "../models/User.js";
+import Booking from "../models/Booking.js";
+import Shows from "../models/Shows.js";
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "movie-ticket-booking" });
@@ -38,7 +40,7 @@ const syncUserDeletion = inngest.createFunction(
 // Function to update user from database
 const syncUserUpdation = inngest.createFunction(
   { id: "update-user-from-clerk" },
-  { event: "clerk/user.updated" },
+  { event: "app/check-payment" },
 
   async ({ event }) => {
     const { id, first_name, last_name, email_addresses, image_url } =
@@ -54,5 +56,41 @@ const syncUserUpdation = inngest.createFunction(
   }
 );
 
+// Function to update user from database
+const releaseSeatsAndDeleteBooking = inngest.createFunction(
+  { id: "release-seats-delete-booking" },
+  { event: "app/checkpayment" },
+
+  async ({ event, step }) => {
+    const tenMinutesLater = new Date(Date.now() + 10 * 60 * 1000);
+    await step.sleepUntil("wait-for-10-minutes", tenMinutesLater);
+
+    await step.run("check-payment-status", async () => {
+      const bookingId = event.data.bookingId;
+      const booking = await Booking.findById(bookingId);
+      if (!booking.isPaid) {
+        const show = await Shows.findById(booking.show);
+        booking.bookedSeat.forEach((seat) => delete show.occupiedSeats[seat]);
+        show.markModified("occupiedSeats");
+        await show.save();
+        await Booking.findByIdAndDelete(booking._id);
+      }
+    });
+
+    const userData = {
+      _id: id,
+      email: email_addresses[0].email_address,
+      name: first_name + " " + last_name,
+      image: image_url,
+    };
+    await User.findByIdAndUpdate(id, userData);
+  }
+);
+
 // Create an empty array where we'll export future Inngest functions
-export const functions = [syncUserCreation, syncUserDeletion, syncUserUpdation];
+export const functions = [
+  syncUserCreation,
+  syncUserDeletion,
+  syncUserUpdation,
+  releaseSeatsAndDeleteBooking,
+];

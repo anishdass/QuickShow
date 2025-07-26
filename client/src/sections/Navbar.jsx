@@ -94,12 +94,15 @@ const Navbar = () => {
               </UserButton.MenuItems>
             </UserButton>
 
-            <button
-              className={`px-2 py-1 text-sm rounded-md text-white shadow-sm transition-all duration-200 opacity-80
+            {isAdmin && (
+              <button
+                onClick={() => navigate("/admin")}
+                className={`px-2 py-1 text-sm rounded-md text-white shadow-sm transition-all duration-200 opacity-80
     ${isAdmin ? "bg-yellow-500" : "bg-gray-500"}
-    hover:opacity-100 hover:shadow-md`}>
-              {isAdmin ? "Admin" : "User"}
-            </button>
+    hover:opacity-100 hover:shadow-md cursor-pointer`}>
+                Admin
+              </button>
+            )}
           </div>
         )}
       </div>

@@ -89,10 +89,13 @@ export const AppContextProvider = ({ children }) => {
     getUserData();
     checkIsAdmin();
     getShows();
+  }, [clerkUser]);
+
+  useEffect(() => {
     if (user) {
       setFavoriteIds(user.favorites.map((favorite) => favorite._id));
     }
-  }, [clerkUser]);
+  }, [user]);
 
   const value = {
     axios,

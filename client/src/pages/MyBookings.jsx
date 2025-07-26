@@ -65,7 +65,11 @@ const MyBookings = () => {
                     {booking.amount}
                   </p>
                   {!booking.isPaid && (
-                    <button className=' bg-primary px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer'>
+                    <button
+                      className='bg-primary px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer'
+                      onClick={() =>
+                        (window.location.href = booking.paymentLink)
+                      }>
                       Pay Now
                     </button>
                   )}
