@@ -1,5 +1,7 @@
 import Stripe from "stripe";
 import Booking from "../models/Booking.js";
+import User from "../models/User.js";
+import { inngest } from "../inngest/index.js";
 
 export const stripeWebhooks = async (req, res) => {
   const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -25,16 +27,20 @@ export const stripeWebhooks = async (req, res) => {
         });
         const session = sessionList.data[0];
         const { bookingId } = session.metadata;
-        console.log(bookingId);
         await Booking.findByIdAndUpdate(bookingId, {
           isPaid: true,
           paymentLink: "",
+        });
+
+        // Send confirmation email
+        await inngest.send({
+          name: "app/show.booked",
+          data: { bookingId },
         });
         break;
 
       default:
         console.log("Unhandled event type", event.type);
-
         break;
     }
     res.json({ received: true });

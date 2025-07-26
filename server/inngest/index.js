@@ -2,6 +2,7 @@ import { Inngest } from "inngest";
 import User from "../models/User.js";
 import Booking from "../models/Booking.js";
 import Shows from "../models/Shows.js";
+import { sendEmail } from "../config/nodemailer.js";
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "movie-ticket-booking" });
@@ -79,10 +80,59 @@ const releaseSeatsAndDeleteBooking = inngest.createFunction(
   }
 );
 
+// Function to send mail to the user after ticket confirmation.
+const sendBookingConfirmationEmail = inngest.createFunction(
+  { id: "send-booking-confirmation-email" },
+  { event: "app/show.booked" },
+
+  async ({ event }) => {
+    const { bookingId } = event.data;
+    const booking = await Booking.findById(bookingId)
+      .populate("user")
+      .populate({ path: "show", populate: { path: "movie", model: "Movie" } });
+    await sendEmail({
+      to: booking.user.email,
+      subject: `Payment Confirmation: ${booking.show.movie.title} booked!`,
+      body: `
+  <div style="font-family: Arial, sans-serif; line-height: 1.6; font-size: 16px; color: #333;">
+    <h2 style="color: #222;">Hi ${booking.user.name},</h2>
+    
+    <p>
+      Your booking for 
+      <strong style="color: #F84565;">"${booking.show.movie.title}"</strong> 
+      is confirmed.
+    </p>
+
+    <p>
+      <strong>Date:</strong> 
+      ${new Date(booking.show.showDateTime).toLocaleDateString("en-US", {
+        timeZone: "Asia/Kolkata",
+      })}<br/>
+      <strong>Time:</strong> 
+      ${new Date(booking.show.showDateTime).toLocaleTimeString("en-US", {
+        timeZone: "Asia/Kolkata",
+      })}
+    </p>
+
+    <p style="margin-top: 20px;">
+      Enjoy the show! 🍿
+    </p>
+
+    <p style="font-size: 14px; color: #555;">
+      Thanks for booking with us!<br/>
+      — <strong>QuickShow Team</strong>
+    </p>
+  </div>
+`,
+    });
+  }
+);
+
 // Create an empty array where we'll export future Inngest functions
 export const functions = [
   syncUserCreation,
   syncUserDeletion,
   syncUserUpdation,
   releaseSeatsAndDeleteBooking,
+  sendBookingConfirmationEmail,
 ];
