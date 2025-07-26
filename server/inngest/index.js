@@ -40,7 +40,7 @@ const syncUserDeletion = inngest.createFunction(
 // Function to update user from database
 const syncUserUpdation = inngest.createFunction(
   { id: "update-user-from-clerk" },
-  { event: "app/user.updated" },
+  { event: "clerk/user.updated" },
 
   async ({ event }) => {
     const { id, first_name, last_name, email_addresses, image_url } =
