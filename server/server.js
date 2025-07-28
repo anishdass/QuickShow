@@ -21,10 +21,7 @@ app.listen(port, () =>
 );
 
 // Allowed origins
-const allowedOrigins = [
-  "http://localhost:5173",
-  "quick-show-mu-murex.vercel.app",
-];
+const allowedOrigins = ["http://localhost:5173"];
 
 // Stripe
 app.post(
@@ -36,7 +33,30 @@ app.post(
 // Middlewares
 app.use(express.json());
 app.use(clerkMiddleware());
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // Allow non-browser requests (like Postman)
+
+    const allowedExactOrigins = [
+      "http://localhost:5173",
+      "https://quick-show-mu-murex.vercel.app",
+    ];
+
+    const isAllowed =
+      allowedExactOrigins.includes(origin) ||
+      origin.endsWith(".vercel.app");
+
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+// app.use(cors({ origin: allowedOrigins, credentials: true }));
 
 // Inngest
 app.use("/api/inngest", serve({ client: inngest, functions }));
