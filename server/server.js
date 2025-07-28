@@ -21,7 +21,10 @@ app.listen(port, () =>
 );
 
 // Allowed origins
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "quick-show-mu-murex.vercel.app",
+];
 
 // Stripe
 app.post(
