@@ -12,10 +12,9 @@ import Title from "../../components/admin/Title";
 import BlurCircle from "../../components/BlurCircle";
 import { completeDateFormat } from "../../lib/utils";
 import { AppContext } from "../../context/AppContext";
-import Booking from "../../../../server/models/Booking";
 
 const Dashboard = () => {
-  const currency = (import.meta.env.VITE_CURRENCY = "£");
+  const currency = import.meta.env.VITE_CURRENCY;
   const { axios, tmdb_img_url } = useContext(AppContext);
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState({
