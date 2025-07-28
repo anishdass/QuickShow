@@ -35,6 +35,19 @@ export const getCurrentShow = async (showId) => {
   return currentShow;
 };
 
+// Find shows by Id
+export const findShowsById = async (id) => {
+  const show = await Shows.findById(id);
+  return show;
+};
+
+// Populated shows
+export const populatedShows = async (windowStart, in8Hours) => {
+  const shows = await Shows.find({
+    showDateTime: { $gte: windowStart, $lte: in8Hours },
+  }).populate("movieId");
+};
+
 // Movies Calls
 // Find movie
 export const findMovie = async (movieId) => {
@@ -76,13 +89,32 @@ export const getBookings = async () => {
   return bookings;
 };
 
+// get bookings by id
+export const getBookingsById = async (bookingId) => {
+  const booking = await Booking.findById(bookingId);
+  return booking;
+};
+
+// Delete booking
+export const deleteBooking = async (bookingId) => {
+  await Booking.findByIdAndDelete(bookingId);
+};
+
 // paid booking
 export const getPaidBookings = async () => {
   const bookings = await Booking.find({ isPaid: true });
   return bookings;
 };
 
-// user calls
+// Populated booking
+export const getPopulatedBooking = async (bookingId) => {
+  const booking = await Booking.findById(bookingId)
+    .populate("user")
+    .populate({ path: "show", populate: { path: "movieId" } });
+  return booking;
+};
+
+// User calls
 // count users
 export const getUsers = async () => {
   const totalUsers = await User.countDocuments();
@@ -97,12 +129,41 @@ export const getUserBookings = async (userId) => {
   return bookings;
 };
 
+// Find user
 export const findUser = async (userId) => {
   let user = await User.findById(userId);
   return user;
 };
 
+// Find user for favorites
 export const findUserForFavorites = async (userId) => {
   let user = await User.findById(userId).populate("favorites");
   return user;
+};
+
+// Create user
+export const createUser = async (userData) => {
+  await User.create(userData);
+};
+
+// Find by Id and delete
+export const findUserByIdAndDelete = async (id) => {
+  await User.findByIdAndDelete(id);
+};
+
+// Find by Id and update
+export const findUserByIdAndUpdate = async (id) => {
+  await User.findByIdAndUpdate(id, userData);
+};
+
+// Find User in userIds
+export const findUserInUserIds = async (userIds) => {
+  const user = await User.find({ _id: { $in: userIds } }).select("name email");
+  return user;
+};
+
+// Get all users
+export const getAllUsers = async () => {
+  const users = await User.find({});
+  return users;
 };

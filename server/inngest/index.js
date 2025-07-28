@@ -1,8 +1,13 @@
 import { Inngest } from "inngest";
-import User from "../models/User.js";
-import Booking from "../models/Booking.js";
-import Shows from "../models/Shows.js";
 import { sendEmail } from "../config/nodemailer.js";
+import {
+  createUser,
+  deleteBooking,
+  findUserByIdAndDelete,
+  findUserByIdAndUpdate,
+  getAllUsers,
+  populatedShows,
+} from "../utils/utilsDB.js";
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "movie-ticket-booking" });
@@ -22,7 +27,7 @@ const syncUserCreation = inngest.createFunction(
       name: first_name + " " + last_name,
       image: image_url,
     };
-    await User.create(userData);
+    await createUser(userData);
   }
 );
 
@@ -34,7 +39,7 @@ const syncUserDeletion = inngest.createFunction(
   async ({ event }) => {
     const { id } = event.data;
 
-    await User.findByIdAndDelete(id);
+    await findUserByIdAndDelete(id);
   }
 );
 
@@ -53,7 +58,7 @@ const syncUserUpdation = inngest.createFunction(
       name: first_name + " " + last_name,
       image: image_url,
     };
-    await User.findByIdAndUpdate(id, userData);
+    await findUserByIdAndUpdate(id, userData);
   }
 );
 
@@ -68,13 +73,13 @@ const releaseSeatsAndDeleteBooking = inngest.createFunction(
 
     await step.run("check-payment-status", async () => {
       const bookingId = event.data.bookingId;
-      const booking = await Booking.findById(bookingId);
+      const booking = getBookingsById(bookingId);
       if (!booking.isPaid) {
-        const show = await Shows.findById(booking.show);
+        const show = findShowsById(booking.show);
         booking.bookedSeat.forEach((seat) => delete show.occupiedSeats[seat]);
         show.markModified("occupiedSeats");
         await show.save();
-        await Booking.findByIdAndDelete(booking._id);
+        await deleteBooking(booking._id);
       }
     });
   }
@@ -87,9 +92,8 @@ const sendBookingConfirmationEmail = inngest.createFunction(
 
   async ({ event }) => {
     const { bookingId } = event.data;
-    const booking = await Booking.findById(bookingId)
-      .populate("user")
-      .populate({ path: "show", populate: { path: "movieId" } });
+    const booking = await getPopulatedBooking(bookingId);
+
     const emailData = {
       to: booking.user.email,
       subject: `Payment Confirmation: ${booking.show.movieId.title} booked!`,
@@ -142,9 +146,7 @@ const sendShowReminders = inngest.createFunction(
 
     // Prepare reminder tasks
     const reminderTasks = await step.run("prepare-reminder-tasks", async () => {
-      const shows = await Shows.find({
-        showDateTime: { $gte: windowStart, $lte: in8Hours },
-      }).populate("movieId");
+      const shows = await populatedShows(windowStart, in8Hours);
 
       const tasks = [];
 
@@ -152,9 +154,7 @@ const sendShowReminders = inngest.createFunction(
         if (!show.movieId || !show.occupiedSeats) continue;
         const userIds = [...new set(Object.values(show.occupiedSeats))];
         if (userIds.length === 0) continue;
-        const users = await User.find({ _id: { $in: userIds } }).select(
-          "name email"
-        );
+        const users = await findUserInUserIds(userIds);
         for (const user of users) {
           tasks.push({
             userEmail: user.email,
@@ -227,7 +227,7 @@ const sendNewShowNotifications = inngest.createFunction(
   async ({ event }) => {
     const { movieTitle } = event.data;
 
-    const users = await User.find({});
+    const users = await getAllUsers();
 
     for (const user of users) {
       const userEmail = user.email;

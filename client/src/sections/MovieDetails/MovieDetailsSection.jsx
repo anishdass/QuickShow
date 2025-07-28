@@ -5,13 +5,13 @@ import BlurCircle from "../../components/BlurCircle";
 import { Heart, StarIcon, PlayCircle } from "lucide-react";
 
 const MovieDetailsSection = ({ show, onShowTrailer }) => {
-  const { toggleFavorite, favoriteIds } = useContext(AppContext);
+  const { toggleFavorite, favoriteIds, tmdb_img_url } = useContext(AppContext);
 
   return (
     <div className=' flex flex-col md:flex-row gap-8 max-w-6xl mx-auto'>
       {/* Movie Poster */}
       <img
-        src={`https://image.tmdb.org/t/p/original${show.movie.poster_path}`}
+        src={`${tmdb_img_url}${show.movie.poster_path}`}
         alt='movie-poster'
         className=' max-md:mx-auto rounded-xl h-104 max-w-70 object-cover'
       />

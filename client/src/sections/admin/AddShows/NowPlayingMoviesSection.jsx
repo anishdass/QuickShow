@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { kConverter } from "../../../lib/utils";
 import { StarIcon, CheckIcon } from "lucide-react";
+import { AppContext } from "../../../context/AppContext";
 
 const NowPlayingMoviesSection = ({
   nowPlayingMovies,
   selectedMovie,
   toggleSelectedMovie,
 }) => {
+  const { tmdb_img_url } = useContext(AppContext);
+
   return (
     <div className=' overflow-x-auto pb-4'>
       <div className=' group flex flex-wrap gap-4 mt-4 w-max'>
@@ -17,7 +20,7 @@ const NowPlayingMoviesSection = ({
             className={` relative max-w-40 cursor-pointer group-hover:not-hover:opacity-40 hover:-translate-y-1 transition duration-300`}>
             <div className=' relative rounded-lg overflow-hidden'>
               <img
-                src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
+                src={`${tmdb_img_url}${movie.poster_path}`}
                 alt='poster'
                 className=' w-full object-cover brightness-90'
               />

@@ -16,7 +16,7 @@ import Booking from "../../../../server/models/Booking";
 
 const Dashboard = () => {
   const currency = (import.meta.env.VITE_CURRENCY = "£");
-  const { axios } = useContext(AppContext);
+  const { axios, tmdb_img_url } = useContext(AppContext);
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState({
     totalBookings: 0,
@@ -91,7 +91,7 @@ const Dashboard = () => {
             {/* Poster */}
             <img
               className=' w-full object-cover'
-              src={`https://image.tmdb.org/t/p/original${show.movieId.poster_path}`}
+              src={`${tmdb_img_url}${show.movieId.poster_path}`}
               alt='poster'
             />
 
