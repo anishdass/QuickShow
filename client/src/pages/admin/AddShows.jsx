@@ -4,7 +4,7 @@ import Loading from "../../components/Loading";
 import NowPlayingMoviesSection from "../../sections/admin/AddShows/NowPlayingMoviesSection";
 import DisplaySelectedTimeSection from "../../sections/admin/AddShows/DisplaySelectedTimeSection";
 import DateAndTimeSection from "../../sections/admin/AddShows/DateAndTimeSection";
-import PriceInputSection from "../../sections/admin/AddShows/PriceInPutSection";
+import PriceInputSection from "../../sections/admin/AddShows/PriceInputSection";
 import { toast } from "react-hot-toast";
 import { AppContext } from "../../context/AppContext";
 
