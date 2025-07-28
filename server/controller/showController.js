@@ -12,6 +12,7 @@ import {
   findTrailerURL,
 } from "../utils/utilsAPI.js";
 import axios from "axios";
+import { inngest } from "../inngest/index.js";
 
 const Authorization = `Bearer ${process.env.TMDB_API_KEY}`;
 const youtube_api_key = process.env.YOUTUBE_API_KEY;
@@ -63,6 +64,13 @@ export const addShows = async (req, res) => {
     if (showsData.length > 0) {
       await addNewShows(showsData);
     }
+
+    // Trigger inggest event
+    await inngest.send({
+      name: "app/show.added",
+      data: { movieTitle: movie.title },
+    });
+
     res.json({ success: true, data: "Shows Added Successfully" });
   } catch (error) {
     res.json({ success: false, message: error.message });
