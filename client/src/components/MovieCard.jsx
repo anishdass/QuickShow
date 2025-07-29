@@ -5,7 +5,7 @@ import { timeFormat } from "../lib/utils";
 import { AppContext } from "../context/AppContext";
 
 const MovieCard = ({ movie }) => {
-  const { favoriteIds, toggleFavorite } = useContext(AppContext);
+  const { favoriteIds, toggleFavorite, tmdb_img_url } = useContext(AppContext);
 
   const navigate = useNavigate();
   return (
@@ -16,7 +16,7 @@ const MovieCard = ({ movie }) => {
             navigate(`/show/${movie._id}`);
             scrollTo(0, 0);
           }}
-          src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
+          src={`${tmdb_img_url}${movie.poster_path}`}
           alt={movie.title}
           className='rounded-lg  w-full object-cover object-right-bottom cursor-pointer'
         />

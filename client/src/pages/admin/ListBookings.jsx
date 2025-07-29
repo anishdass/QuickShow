@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { dummyBookingData } from "../../assets/assets";
 import Title from "../../components/admin/Title";
 import { completeDateFormat } from "../../lib/utils";
 import Loading from "../../components/Loading";
@@ -11,11 +10,13 @@ const ListBookings = () => {
 
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { axios } = useContext(AppContext);
+  const { axios, getToken } = useContext(AppContext);
 
   const getAllBookings = async () => {
     try {
-      const bookings = await axios.get("/api/admin/all-bookings");
+      const bookings = await axios.get("/api/admin/all-bookings", {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
       setBookings(bookings.data.data);
     } catch (error) {
       console.log(error.message);

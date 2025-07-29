@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import { dummyDateTimeData, dummyShowsData } from "../../assets/assets";
 import Title from "../../components/admin/Title";
 import Loading from "../../components/Loading";
-import { completeDateFormat, isoTimeFormat } from "../../lib/utils";
+import { completeDateFormat } from "../../lib/utils";
 import { AppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
@@ -11,11 +10,13 @@ const ListShows = () => {
 
   const [shows, setShows] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { axios } = useContext(AppContext);
+  const { axios, getToken } = useContext(AppContext);
 
   const getAllShows = async () => {
     try {
-      const shows = await axios.get("/api/admin/upcoming-shows");
+      const shows = await axios.get("/api/admin/upcoming-shows", {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
       setShows(shows.data.data);
     } catch (error) {
       console.log(error.message);

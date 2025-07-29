@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import DateSelect from "../sections/MovieDetails/DateSelect";
-import { dummyTrailers } from "../assets/assets";
 import CastSection from "../sections/MovieDetails/CastSection";
 import MovieDetailsSection from "../sections/MovieDetails/MovieDetailsSection";
 import toast from "react-hot-toast";
@@ -11,7 +10,7 @@ import RecommendedMovies from "../sections/MovieDetails/RecommendedMovies";
 const MovieDetails = () => {
   const [show, setShow] = useState(null);
   const { id } = useParams();
-  const { axios, upcomingShows } = useContext(AppContext);
+  const { axios, upcomingShows, getToken } = useContext(AppContext);
 
   const onShowTrailer = (url) => {
     window.open(url);
@@ -19,7 +18,9 @@ const MovieDetails = () => {
 
   const getShow = async () => {
     try {
-      const { data } = await axios.get(`/api/show/${id}`);
+      const { data } = await axios.get(`/api/show/${id}`, {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
       const movie = data.data;
       const dateTime = data.dateTime;
       setShow({ movie, dateTime });

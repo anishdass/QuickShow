@@ -1,18 +1,17 @@
-const Authorization = `Bearer ${process.env.TMDB_API_KEY}`;
 import axios from "axios";
 
 // Get now playing movies
-
 export const getNowPlayingMovies = async () => {
   const response = await axios.get(
     "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1",
     {
-      headers: { Authorization },
+      headers: { Authorization: `Bearer ${process.env.TMDB_API_KEY}` },
     }
   );
   return response;
 };
 
+// Find trailer URL
 export const findTrailerURL = async (data) => {
   const url = await axios.get(data);
   return url;
@@ -22,7 +21,7 @@ export const findTrailerURL = async (data) => {
 export const getMovieDetails = async (movieId) => {
   const movieDetails = await axios.get(
     `https://api.themoviedb.org/3/movie/${movieId}`,
-    { headers: { Authorization } }
+    { headers: { Authorization: `Bearer ${process.env.TMDB_API_KEY}` } }
   );
   return movieDetails;
 };
@@ -31,7 +30,7 @@ export const getMovieDetails = async (movieId) => {
 export const getCastDetails = async (movieId) => {
   const movieCast = await axios.get(
     `https://api.themoviedb.org/3/movie/${movieId}/credits`,
-    { headers: { Authorization } }
+    { headers: { Authorization: `Bearer ${process.env.TMDB_API_KEY}` } }
   );
   return movieCast;
 };

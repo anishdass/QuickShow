@@ -8,10 +8,12 @@ const MyBookings = () => {
   const [bookings, setBookings] = useState(null);
   const [loading, setLoading] = useState(true);
   const currency = import.meta.env.VITE_CURRENCY;
-  const { axios, tmdb_img_url } = useContext(AppContext);
+  const { axios, tmdb_img_url, getToken } = useContext(AppContext);
 
   const getMyBookings = async () => {
-    const { data } = await axios.get("/api/user/bookings");
+    const { data } = await axios.get("/api/user/bookings", {
+      headers: { Authorization: `Bearer ${await getToken()}` },
+    });
     setBookings(data.bookings);
     setLoading(false);
   };

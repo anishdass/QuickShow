@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { assets } from "../assets/assets";
 import Loading from "../components/Loading";
 import { dateFormat, isoTimeFormat } from "../lib/utils";
@@ -10,7 +10,7 @@ import { AppContext } from "../context/AppContext";
 
 const SeatLayout = () => {
   const { id, dateString } = useParams();
-  const { axios } = useContext(AppContext);
+  const { axios, getToken } = useContext(AppContext);
   const groupRows = [
     ["A", "B"],
     ["C", "D"],
@@ -29,8 +29,6 @@ const SeatLayout = () => {
 
   const selectedDate = selectedTime.split("T")[0];
 
-  const navigate = useNavigate();
-
   const toggleSelectedTime = (time) => {
     if (selectedTime === time) {
       setSelectedTime("");
@@ -40,7 +38,9 @@ const SeatLayout = () => {
   };
 
   const getShow = async () => {
-    const data = await axios.get(`/api/show/${id}`);
+    const data = await axios.get(`/api/show/${id}`, {
+      headers: { Authorization: `Bearer ${await getToken()}` },
+    });
     const movie = data.data.data;
     const dateTime = data.data.dateTime;
     if (data) {
@@ -94,7 +94,11 @@ const SeatLayout = () => {
   const reserveSeats = async () => {
     try {
       const payload = { selectedSeats, showId };
-      const { data } = await axios.post("/api/booking/create-booking", payload);
+      const { data } = await axios.post(
+        "/api/booking/create-booking",
+        payload,
+        { headers: { Authorization: `Bearer ${await getToken()}` } }
+      );
       window.location.href = data.url;
     } catch (error) {
       console.log(error.message);
@@ -105,7 +109,9 @@ const SeatLayout = () => {
   const getBookedSeats = async () => {
     if (showId) {
       try {
-        const { data } = await axios.get(`/api/booking/seats/${showId}`);
+        const { data } = await axios.get(`/api/booking/seats/${showId}`, {
+          headers: { Authorization: `Bearer ${await getToken()}` },
+        });
         setOccupiedSeats(data.data);
       } catch (error) {
         console.log(error.message);

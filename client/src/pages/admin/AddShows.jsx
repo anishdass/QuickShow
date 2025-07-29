@@ -19,12 +19,14 @@ const AddShows = () => {
   const [dateTimeInput, setDateTimeInput] = useState("");
   const [showPrice, setShowPrice] = useState("");
   const [buying, setBuying] = useState(false);
-  const { axios } = useContext(AppContext);
+  const { axios, getToken } = useContext(AppContext);
 
   // fetchNowPlayingMovies
   const fetchNowPlayingMovies = async () => {
     try {
-      const { data } = await axios.get("/api/show/now-playing");
+      const { data } = await axios.get("/api/show/now-playing", {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
       const movies = data.data.results;
       setNowPlayingMovies(movies);
     } catch (error) {
@@ -85,7 +87,9 @@ const AddShows = () => {
           showPrice,
           showDateTimeData: dateTimeSelection,
         };
-        const { data } = await axios.post("/api/show/add-shows", payLoad);
+        const { data } = await axios.post("/api/show/add-shows", payLoad, {
+          headers: { Authorization: `Bearer ${await getToken()}` },
+        });
         if (data.success) {
           toast.success("Shows added");
           setShowPrice("");

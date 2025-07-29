@@ -15,7 +15,7 @@ import { AppContext } from "../../context/AppContext";
 
 const Dashboard = () => {
   const currency = import.meta.env.VITE_CURRENCY;
-  const { axios, tmdb_img_url } = useContext(AppContext);
+  const { axios, tmdb_img_url, getToken } = useContext(AppContext);
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState({
     totalBookings: 0,
@@ -49,7 +49,9 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const dashboardData = await axios.get("/api/admin/dashboard");
+      const dashboardData = await axios.get("/api/admin/dashboard", {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
       setDashboardData(dashboardData.data.data);
     } catch (error) {
       console.log(error.message);
